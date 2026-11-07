@@ -44,7 +44,7 @@ jobs:
       - name: Prepare the site
         run: |
           mkdir _site
-          cp index.html stats.json _site/
+          cp index.html stats.json *.pdf _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:
