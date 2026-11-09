@@ -369,6 +369,67 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .links a, .plist a { color: #6b46a8; }
   .pub, .project, .rows li, .plist li, .course, .line, .hl li, tr, .timeline li { break-inside: avoid; }
 }
+/* Collaborations: map, network and topic badges */
+.stats3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.viz { position: relative; height: 460px; border: 1px solid var(--line); border-radius: 8px; background: #f7f3fd; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.viz.net { height: 540px; background: var(--surface); }
+.viz.active { touch-action: none; border-color: var(--accent-bright); }
+.viz svg { display: block; width: 100%; height: 100%; cursor: grab; }
+.viz svg:active { cursor: grabbing; }
+.sea { fill: #f7f3fd; }
+#mapLand path { fill: #e8e1f3; stroke: #fbf9fe; stroke-width: .6; vector-effect: non-scaling-stroke; }
+#mapLand path.partner { fill: #d6c7ef; }
+.arc { fill: none; stroke-width: 1.6; stroke-opacity: .55; stroke-linecap: round; }
+.mk { cursor: pointer; outline: none; }
+.mk .shape { stroke: #fff; stroke-width: 1.6; }
+.mk:hover .shape, .mk:focus-visible .shape, .mk.on .shape { stroke: var(--fg); stroke-width: 2.2; }
+.gl { fill: none; stroke: #fff; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.gl-f { fill: #fff; }
+.lead { stroke: var(--muted); stroke-width: 1; stroke-opacity: .6; vector-effect: non-scaling-stroke; }
+.lead-dot { fill: var(--fg); }
+.viz-ctrl { position: absolute; top: 10px; right: 10px; display: flex; gap: 4px; }
+.viz-ctrl button { min-width: 32px; height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--fg); font-size: .86rem; font-weight: 500; }
+.viz-ctrl button:hover { border-color: var(--muted); }
+.viz-hint { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 5px 12px; border-radius: 4px; background: var(--fg); color: var(--bg); font-size: .82rem; white-space: nowrap; pointer-events: none; }
+.tip { position: absolute; z-index: 5; width: max-content; max-width: min(300px, calc(100% - 20px)); padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); box-shadow: 0 6px 22px rgba(42, 33, 64, .16); font-size: .86rem; line-height: 1.4; display: grid; gap: 4px; }
+.tip strong { font-weight: 600; font-size: .92rem; }
+.tip .muted { font-size: .8rem; }
+.tip ul { display: grid; gap: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .84rem; color: var(--muted); align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend .sep { width: 1px; height: 16px; background: var(--line); }
+.badge { display: inline-grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 50%; }
+.badge.sq { border-radius: 4px; }
+.badge svg { width: 13px; height: 13px; display: block; }
+.badge.plain { background: none; border: 1.6px solid var(--muted); width: 14px; height: 14px; }
+.dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; flex: none; }
+.tchips { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 3px; font-size: .82rem; color: var(--muted); }
+.tchips span { display: inline-flex; align-items: center; gap: 5px; }
+.tchips .badge { width: 16px; height: 16px; }
+.tchips .badge svg { width: 11px; height: 11px; }
+/* Network */
+.ln { stroke: #9b8bb8; stroke-opacity: .32; vector-effect: non-scaling-stroke; }
+.spoke { stroke: #b39ae0; stroke-opacity: .14; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.nd circle { stroke: #fff; stroke-width: 1.5; vector-effect: non-scaling-stroke; cursor: pointer; }
+.nd.me circle { fill: var(--fg); }
+.nd text { font-family: var(--body); font-weight: 500; font-size: var(--fs, 11px); fill: var(--fg); paint-order: stroke; stroke: #fff; stroke-width: calc(var(--fs, 11px) * .28); stroke-linejoin: round; pointer-events: none; }
+.nd.me text { font-weight: 600; font-size: var(--fs-me, 12.5px); }
+.ln, .spoke, .arc, .lead { pointer-events: none; }
+#netG.focus .ln, #netG.focus .spoke { stroke-opacity: .05 !important; }
+#netG.focus .ln.lit { stroke: var(--accent); stroke-opacity: .85 !important; }
+.nd text { display: none; }
+.nd text.show { display: block; }
+#netG.focus .nd { opacity: .22; }
+#netG.focus .nd.lit { opacity: 1; }
+@media (max-width: 620px) {
+  .viz { height: 380px; }
+  .viz.net { height: 440px; }
+  .stats3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .stats3 .stat { padding: 12px; }
+  .stats3 .stat b { font-size: 1.6rem; }
+  .viz-ctrl button { min-width: 30px; height: 30px; padding: 0 8px; }
+}
+@media print { .tchips { display: none !important; } }
 </style>
 </head>
 <body>
@@ -500,30 +561,36 @@ const CV = {
     {kind: "industrial", years: "2018 – 2021", title: "Monitoring of storage tanks through acoustic emissions", funder: "Eni", role: "Testing and validation of anomaly detection and source identification", text: "Intelligent sensors for locating cracks and structural anomalies in large fuel storage tanks."},
     {kind: "industrial", years: "2018", title: "A sensor node for monitoring hydraulic systems", funder: "REIA s.r.l.", role: "Development and data analysis", text: "A heterogeneous platform for monitoring centrifugal pumps and identifying cavitation."}
   ],
-  collaborations: {
-    /* when and where may be empty: the row then shows only the partner's name */
-    academic: [
-      {when: "2022 – present", what: "University College Dublin, Dynamical Systems and Risk Laboratory", where: "Prof. Vikram Pakrashi. On-chip eigenperturbation methods and new acoustic emission sensors. Member of the academic advisory board of the HarMonI project, and co-supervision of a doctoral candidate in the MSCA network DIAMOND"},
-      {when: "2022 – present", what: "University of Genoa, Smart Embedded Applications Lab (DITEN)", where: "Prof. Edoardo Ragusa, Prof. Paolo Gastaldo and Prof. Rodolfo Zunino. Joint optimization of sensing, local processing, transmission and accuracy for sensor-near AI"},
-      {when: "2020 – present", what: "ETH Zürich, Structural Mechanics and Monitoring Group", where: "Prof. Eleni Chatzi. Sensor-near system identification and dedicated hardware for vibration monitoring, starting from a research visit in 2020 and 2021"},
-      {when: "2018 – present", what: "University of Siegen, previously Goethe University Frankfurt", where: "Prof. Jochen Moll. Sensors and systems for guided-wave wireless communication, acoustic modulation and directional piezoelectric transducers"},
-      {when: "", what: "University of Stavanger, group of Prof. Florenc Demrozi", where: "Joint work on the IEEE COINS conference series, including COINS 2027 in Stavanger"},
-      {when: "", what: "University of Bologna, interdepartmental collaborations", where: "Heterogeneous sensor networks with the Departments of Computer Science and Engineering (DISI) and of Civil, Chemical, Environmental and Materials Engineering (DICAM). Sensors integrated into structures for acoustic emission monitoring with the Department of Industrial Engineering (DIN)"},
-      {when: "", what: "CEA, France", where: "Dr. Arnaud Recoquillay. Project SHIELD, on acoustic emission monitoring of nuclear facilities"},
-      {when: "2022 – 2026", what: "SINTEF, imec, CEA-Leti and EDI", where: "Partners in Task T3.4 of the EdgeAI project, AI-based electronic system design, which I led"}
-    ],
-    nonAcademic: [
-      {when: "2020 – 2022", what: "Rete Ferroviaria Italiana (RFI)", where: "Predictive algorithms for railway catenary wear, with a wireless sensor network tested on the Bologna–Ancona and Bologna–Milan lines"},
-      {when: "2017 – 2023", what: "INAIL, Italian National Institute for Insurance against Accidents at Work", where: "Projects SmartBench, MAC4PRO and DS2, on sensor networks for structural monitoring, smart maintenance and the safety of industrial plants"},
-      {when: "2023 – present", what: "STMicroelectronics", where: "Marco Pasotti, Smart Power TR&D. Analog in-memory computing with phase change memory, including a co-supervised doctoral candidate. Also a portable sensing system for viticulture with STMicroelectronics France, within EdgeAI"},
-      {when: "2022 – 2026", what: "SCM Group and Signify", where: "Partners in Task T3.4 of the EdgeAI project"},
-      {when: "2025", what: "ART-ER, Emilia-Romagna Region", where: "Open Innovation programme within ECOSISTER, connecting companies and research groups on the ecological transition"},
-      {when: "2018 – 2021", what: "Eni", where: "Acoustic emission monitoring of large fuel storage tanks"},
-      {when: "2018", what: "REIA s.r.l.", where: "A heterogeneous sensor node for monitoring cavitation in hydraulic pumps"}
-    ]
-  },
-      
-  collaborationsOther: ["Infineon Technologies Italia", "Baker Hughes", "TÜV Austria", "HPE Coxa"],
+  /* Collaborations: one entry per partner. They feed the map, the lists and the figures.
+     type: "academic" or "industry" · topics: keys from TOPICS below, the first one sets the map colour
+     lat and lon place the partner on the map (leave them out to list a partner without a map marker)
+     atHome: true shows the partner in the Bologna marker · an empty "where" moves the partner to "Also worked with" */
+  collaborationHome: {name: "University of Bologna", city: "Bologna", country: "IT", lat: 44.4967, lon: 11.3526},
+  collaborations: [
+    {type: "academic", name: "University College Dublin, Dynamical Systems and Risk Laboratory", url: "https://www.ucd.ie/dsrl/", city: "Dublin", country: "IE", lat: 53.3083, lon: -6.2236, topics: ["sysid", "ae"], when: "2022 – present", where: "Prof. Vikram Pakrashi. On-chip eigenperturbation methods and new acoustic emission sensors. Member of the academic advisory board of the HarMonI project, and co-supervision of a doctoral candidate in the MSCA network DIAMOND"},
+    {type: "academic", name: "University of Genoa, Smart Embedded Applications Lab (DITEN)", url: "https://diten.unige.it/", city: "Genoa", country: "IT", lat: 44.4026, lon: 8.9596, topics: ["edge", "cs"], when: "2022 – present", where: "Prof. Edoardo Ragusa, Prof. Paolo Gastaldo and Prof. Rodolfo Zunino. Joint optimization of sensing, local processing, transmission and accuracy for sensor-near AI"},
+    {type: "academic", name: "ETH Zürich, Structural Mechanics and Monitoring Group", url: "https://chatzi.ibk.ethz.ch/", city: "Zürich", country: "CH", lat: 47.4083, lon: 8.5076, topics: ["sysid", "edge"], when: "2020 – present", where: "Prof. Eleni Chatzi. Sensor-near system identification and dedicated hardware for vibration monitoring, starting from a research visit in 2020 and 2021"},
+    {type: "academic", name: "University of Siegen, previously Goethe University Frankfurt", url: "https://www.uni-siegen.de/", city: "Siegen", country: "DE", lat: 50.9133, lon: 8.0275, topics: ["gw"], when: "2018 – present", where: "Prof. Jochen Moll. Sensors and systems for guided-wave wireless communication, acoustic modulation and directional piezoelectric transducers"},
+    {type: "academic", name: "University of Stavanger, group of Prof. Florenc Demrozi", url: "https://florencdemrozi.github.io/", city: "Stavanger", country: "NO", lat: 58.9378, lon: 5.6970, topics: ["edge", "other"], when: "", where: "Anomaly detection on wearable devices with lightweight transformer models for biomedical applications. Joint work on the IEEE COINS conference series, including COINS 2027 in Stavanger"},
+    {type: "academic", name: "University of Bologna, interdepartmental collaborations", url: "https://www.unibo.it/en", city: "Bologna", country: "IT", atHome: true, topics: ["net", "ae"], when: "", where: "Heterogeneous sensor networks with the Departments of Computer Science and Engineering (DISI) and of Civil, Chemical, Environmental and Materials Engineering (DICAM). Sensors integrated into structures for acoustic emission monitoring with the Department of Industrial Engineering (DIN)"},
+    {type: "academic", name: "CEA, France", url: "https://www.cea.fr/english", city: "Saclay", country: "FR", lat: 48.7106, lon: 2.1478, topics: ["ae"], when: "", where: "Dr. Arnaud Recoquillay. Project SHIELD, on acoustic emission monitoring of nuclear facilities"},
+    {type: "academic", name: "SINTEF", url: "https://www.sintef.no/en/", city: "Trondheim", country: "NO", lat: 63.4185, lon: 10.4020, topics: ["edge"], when: "2022 – 2026", where: "Partner in Task T3.4 of the EdgeAI project, AI-based electronic system design, which I led"},
+    {type: "academic", name: "imec", url: "https://www.imec-int.com/", city: "Leuven", country: "BE", lat: 50.8637, lon: 4.6787, topics: ["edge"], when: "2022 – 2026", where: "Partner in Task T3.4 of the EdgeAI project, AI-based electronic system design, which I led"},
+    {type: "academic", name: "CEA-Leti", url: "https://www.leti-cea.com/", city: "Grenoble", country: "FR", lat: 45.1946, lon: 5.7071, topics: ["edge"], when: "2022 – 2026", where: "Partner in Task T3.4 of the EdgeAI project, AI-based electronic system design, which I led"},
+    {type: "academic", name: "EDI, Institute of Electronics and Computer Science", url: "https://www.edi.lv/en/", city: "Riga", country: "LV", lat: 56.9616, lon: 24.1606, topics: ["edge"], when: "2022 – 2026", where: "Partner in Task T3.4 of the EdgeAI project, AI-based electronic system design, which I led"},
+    {type: "industry", name: "Rete Ferroviaria Italiana (RFI)", url: "https://www.rfi.it/", city: "Rome", country: "IT", lat: 41.9093, lon: 12.5035, topics: ["ind", "net"], when: "2020 – 2022", where: "Predictive algorithms for railway catenary wear, with a wireless sensor network tested on the Bologna–Ancona and Bologna–Milan lines"},
+    {type: "industry", name: "INAIL, Italian National Institute for Insurance against Accidents at Work", url: "https://www.inail.it/", city: "Rome", country: "IT", lat: 41.8303, lon: 12.4630, topics: ["ind", "net"], when: "2017 – 2023", where: "Projects SmartBench, MAC4PRO and DS2, on sensor networks for structural monitoring, smart maintenance and the safety of industrial plants"},
+    {type: "industry", name: "STMicroelectronics", url: "https://www.st.com/", city: "Agrate Brianza", country: "IT", lat: 45.5770, lon: 9.3530, topics: ["edge", "cs"], when: "2023 – present", where: "Marco Pasotti, Smart Power TR&D. Analog in-memory computing with phase change memory, including a co-supervised doctoral candidate. Also a portable sensing system for viticulture with STMicroelectronics France, within EdgeAI"},
+    {type: "industry", name: "SCM Group", url: "https://www.scmgroup.com/en", city: "Rimini", country: "IT", lat: 44.0397, lon: 12.5596, topics: ["edge"], when: "2022 – 2026", where: "Partner in Task T3.4 of the EdgeAI project"},
+    {type: "industry", name: "Signify", url: "https://www.signify.com/", city: "Eindhoven", country: "NL", lat: 51.4106, lon: 5.4572, topics: ["edge"], when: "2022 – 2026", where: "Partner in Task T3.4 of the EdgeAI project"},
+    {type: "industry", name: "ART-ER, Emilia-Romagna Region", url: "https://www.art-er.it/en/", city: "Bologna", country: "IT", atHome: true, topics: ["misc"], when: "2025", where: "Open Innovation programme within ECOSISTER, connecting companies and research groups on the ecological transition"},
+    {type: "industry", name: "Eni", url: "https://www.eni.com/", city: "San Donato Milanese", country: "IT", lat: 45.4189, lon: 9.2650, topics: ["ae", "ind"], when: "2018 – 2021", where: "Acoustic emission monitoring of large fuel storage tanks"},
+    {type: "industry", name: "REIA s.r.l.", url: "", topics: ["net"], when: "2018", where: "A heterogeneous sensor node for monitoring cavitation in hydraulic pumps"},
+    {type: "industry", name: "Infineon Technologies Italia", url: "https://www.infineon.com/", city: "Milan", country: "IT", lat: 45.4642, lon: 9.1900, topics: ["dft"], when: "", where: "Supervision of student theses on design for testability"},
+    {type: "industry", name: "Baker Hughes", url: "https://www.bakerhughes.com/", city: "Florence", country: "IT", lat: 43.7920, lon: 11.2186, topics: ["ae", "ind"], when: "", where: "Acoustic-based condition maintenance of industrial assets with deep learning"},
+    {type: "industry", name: "TÜV Austria", url: "https://www.tuv.at/", city: "Vienna", country: "AT", lat: 48.2082, lon: 16.3738, topics: ["ae", "ind"], when: "", where: "Maintenance of industrial infrastructures based on acoustic emission"},
+    {type: "industry", name: "HPE COXA", url: "", city: "Modena", country: "IT", lat: 44.6471, lon: 10.9252, topics: ["edge", "ind"], when: "", where: "Anomaly detection on rotating machines with embedded approaches"}
+  ],
   /* Each course can link to its official page (catalogue) and to its Virtuale page (virtuale).
      Paste the address of the Virtuale course page, e.g. "https://virtuale.unibo.it/course/view.php?id=12345". Empty fields are not shown. */
   courses: [
@@ -628,6 +695,19 @@ const CV = {
 
 /* Publication themes. Each paper in PUBS lists the keys that apply in th. */
 const THEMES = {cs: "Data compression", sysid: "System identification", edge: "Edge AI & TinyML", gw: "Guided-wave links & power", ae: "Damage localization", net: "Sensor nodes & platforms", other: "Agriculture & health"};
+/* Collaboration topics: colour and icon of each partner on the map (keys used in collaborations[].topics) */
+const TOPICS = {
+  edge: {label: "Edge AI & TinyML", color: "#6b46a8"},
+  sysid: {label: "Vibration & system identification", color: "#b23a7a"},
+  gw: {label: "Guided waves & transducers", color: "#2a6fb0"},
+  ae: {label: "Acoustic emission & damage localization", color: "#c25e12"},
+  net: {label: "Sensor networks & IoT", color: "#1f8a78"},
+  cs: {label: "Data compression", color: "#8a6a00"},
+  ind: {label: "Infrastructure & industrial monitoring", color: "#6e5a4a"},
+  dft: {label: "Design for testability", color: "#3d5a99"},
+  other: {label: "Agriculture & health", color: "#5f8a2e"},
+  misc: {label: "Other collaborations", color: "#8a8199"}
+};
 /* Selected publications: t is the start of the title in PUBS, cites the Google Scholar count on the date shown on the page. */
 const SELECTED = [
   {t: "Energy-efficient deep learning-based", cites: 0},
@@ -839,8 +919,222 @@ const PUBS = [
   <div class="page" id="p-collaborations" data-page="collaborations" hidden>
     <div class="head">
       <h1>Collaborations</h1>
-      <p class="muted">Research groups and organizations I work with.</p>
+      <p class="muted">Research groups and organizations I work with, and the people I publish with.</p>
     </div>
+    <div class="stats stats3 no-print" id="collabStats"></div>
+    <section class="block no-print">
+      <h2 class="block-title">Collaboration map</h2>
+      <p class="prose muted">Each marker is a partner, coloured by the main topic of our work. Hover over or tap a marker for details and a link. Click or tap the map once, then drag to move it and zoom with the buttons, a pinch or the mouse wheel.</p>
+      <div class="viz map" id="mapWrap">
+        <svg id="mapSvg" aria-label="Map of partner institutions and companies">
+          <rect class="sea" x="-5000" y="-5000" width="10000" height="10000"></rect>
+          <g id="mapLand">
+<path d="M986.5 300.9L986.1 302.4L982.3 303.9L982.2 302.7L986.5 300.9ZM980.3 305.5L981.1 304.9L981.8 305.9L980.9 307.5L979.1 308.0L977.7 307.6L977.8 306.2L979.2 305.1L980.3 305.5ZM14.1 300.8L14.1 302.3L13.9 302.4L13.5 300.9L14.1 300.8Z" data-cc="FJ"><title>Fiji</title></path>
+<path d="M592.7 253.0L603.1 259.8L603.2 261.6L607.1 264.8L605.8 268.7L605.9 270.5L607.7 271.6L607.7 272.5L606.9 274.4L606.8 276.9L608.8 282.0L609.7 282.7L607.5 284.5L604.5 285.7L602.9 285.7L601.9 286.6L600.0 286.7L599.2 287.1L596.0 286.2L594.0 286.5L593.3 282.2L591.9 279.8L589.3 279.2L583.8 276.4L582.4 272.4L580.9 270.6L580.3 268.8L580.6 267.2L580.2 264.2L581.3 264.1L584.1 260.6L583.3 257.6L584.1 257.2L584.3 255.4L583.2 253.6L584.2 253.2L592.7 253.0Z" data-cc="TZ"><title>Tanzania</title></path>
+<path d="M477.2 162.2L477.0 167.9L468.3 167.7L468.2 175.9L465.7 176.2L465.0 177.8L465.4 182.4L454.9 182.4L454.3 183.4L454.4 182.1L460.5 181.8L460.9 180.7L462.0 179.3L463.0 174.9L466.8 171.4L468.1 167.4L469.0 167.2L469.9 164.7L472.1 164.3L474.3 164.8L475.1 164.0L476.8 163.9L476.8 162.2L477.2 162.2Z" data-cc="EH"><title>Western Sahara</title></path>
+<path d="M203.9 94.8L199.7 90.5L196.1 89.2L196.4 86.5L197.9 84.7L195.7 83.4L196.9 81.0L195.5 78.8L196.5 77.2L198.8 75.8L200.0 73.9L197.4 72.0L197.7 66.6L196.1 64.1L196.0 62.6L189.6 65.2L188.5 62.0L187.0 61.2L184.9 61.1L199.1 45.0L208.9 35.0L212.1 35.6L214.1 36.9L216.0 37.1L222.2 35.2L225.0 35.5L233.2 33.7L233.6 34.8L235.7 34.2L237.3 32.9L238.5 33.2L239.8 35.6L244.2 33.8L242.6 35.8L245.6 35.4L247.0 34.6L249.4 34.7L251.6 35.9L255.6 36.8L258.1 37.3L260.3 37.1L262.0 38.5L258.0 39.8L261.3 40.4L267.2 40.1L269.4 39.6L270.4 41.2L273.7 39.9L272.4 38.7L274.5 37.8L279.0 37.4L280.2 38.0L281.2 39.5L283.7 39.3L286.6 40.5L293.2 40.2L294.1 38.5L296.2 38.0L298.9 38.9L297.2 41.5L299.9 39.3L301.6 39.4L304.3 36.7L303.2 35.0L301.5 34.0L303.7 31.0L307.5 29.1L309.8 29.6L311.1 30.7L311.9 33.7L309.2 35.0L312.7 35.5L310.9 38.3L315.0 36.2L316.4 37.9L314.6 39.9L315.5 41.7L318.9 39.8L321.8 37.4L323.7 34.5L329.3 35.1L331.3 36.4L330.7 37.8L328.3 39.2L329.0 40.7L328.0 42.0L322.8 43.9L319.6 44.3L317.8 43.5L311.7 48.4L308.1 50.3L304.9 50.5L302.5 51.7L301.3 53.5L298.6 53.9L294.6 56.2L290.3 59.4L288.2 61.7L286.2 65.0L289.3 65.5L288.8 70.5L292.3 69.9L295.9 71.2L297.6 72.3L298.6 73.7L301.1 74.5L303.0 75.8L309.2 76.2L307.7 78.8L307.1 81.8L307.5 85.2L309.9 88.1L312.1 87.1L314.6 84.0L315.2 79.2L314.2 77.6L318.5 76.3L322.0 74.2L324.1 72.1L324.8 70.1L324.3 67.6L322.5 65.4L326.6 62.4L326.8 59.8L328.2 55.3L330.0 54.7L335.6 55.7L337.7 55.0L341.3 57.6L341.5 58.7L345.4 58.9L344.3 61.3L343.6 65.0L345.5 65.5L346.4 67.2L350.3 65.6L353.7 62.4L355.7 61.0L359.4 70.8L357.8 72.7L360.3 74.3L361.9 76.0L365.3 76.8L366.5 77.8L366.7 80.3L368.4 80.7L369.0 81.8L368.3 85.2L364.3 87.4L360.0 88.5L356.3 91.0L352.1 91.5L347.2 90.9L341.1 91.1L338.4 93.3L334.9 94.6L326.5 101.6L328.7 101.1L333.8 97.0L339.7 94.4L343.4 94.1L345.1 95.6L342.2 97.7L342.2 103.4L344.9 104.9L349.1 104.5L352.5 101.0L352.1 103.3L353.4 104.4L349.8 106.4L343.9 108.3L341.1 109.5L337.8 111.8L335.9 111.6L336.5 108.9L341.5 106.3L334.7 106.8L333.6 105.1L334.8 100.8L334.0 99.9L332.2 100.5L331.6 99.6L329.1 102.0L326.3 105.8L324.3 106.5L323.8 107.2L315.5 107.2L310.6 110.3L309.4 111.5L304.7 111.6L303.4 112.1L303.4 113.9L299.7 115.5L297.0 116.0L293.5 117.7L292.9 117.7L292.1 116.7L296.2 111.7L297.0 106.2L294.9 104.7L295.4 104.1L295.2 103.8L294.5 103.8L294.3 102.5L293.1 102.8L293.4 102.5L292.9 102.2L293.0 101.3L286.1 97.0L283.6 97.9L280.1 97.1L278.0 97.5L276.0 96.5L272.2 95.9L271.6 95.3L271.9 93.7L271.1 93.7L270.6 94.8L203.9 94.8ZM315.4 55.0L317.7 53.7L320.7 53.7L320.4 54.2L317.0 55.8L315.5 55.7L315.4 55.0ZM340.1 26.8L338.7 25.5L339.4 24.6L340.4 24.4L344.8 24.7L347.4 26.1L347.2 26.8L340.1 26.8ZM323.0 56.0L324.3 55.1L325.1 55.2L325.4 55.8L323.8 57.3L322.9 57.0L323.0 56.0ZM316.4 21.3L314.6 22.3L311.9 22.1L310.0 21.4L312.0 20.3L315.3 19.6L316.3 20.5L316.4 21.3ZM321.1 15.1L320.1 15.1L316.7 15.0L316.8 14.3L320.6 14.4L321.5 14.8L321.1 15.1ZM318.2 12.1L319.7 12.9L318.4 13.8L315.2 14.3L314.1 13.7L314.1 12.9L314.9 11.9L318.2 12.1ZM326.1 22.8L318.5 21.7L319.6 19.1L318.5 18.0L314.8 17.7L313.2 16.9L314.8 15.9L318.6 16.1L320.1 16.9L323.8 16.9L324.9 17.7L323.7 18.6L326.3 19.7L331.5 20.0L339.1 19.3L342.2 19.5L343.6 20.4L343.4 21.4L341.7 22.1L338.4 22.7L336.1 22.3L326.1 22.8ZM289.4 13.6L291.7 13.9L290.3 14.7L286.1 15.3L284.0 14.6L286.4 13.8L289.4 13.6ZM291.6 12.1L293.5 12.5L287.6 13.0L290.7 11.9L291.6 12.1ZM367.8 87.8L363.7 92.4L365.6 91.3L367.0 92.0L365.9 93.0L367.8 93.9L369.1 93.1L371.3 94.1L370.0 96.3L371.8 95.8L372.0 99.4L370.4 102.1L369.2 102.2L367.8 101.6L368.9 99.1L368.3 98.7L364.8 101.4L363.4 101.3L365.5 99.8L363.3 99.1L356.0 99.2L355.9 98.2L357.6 97.2L356.8 96.3L359.3 94.5L363.1 89.6L365.1 87.8L367.4 86.8L368.5 86.9L367.8 87.8ZM319.6 47.5L323.5 49.3L323.0 50.7L324.7 50.4L325.8 51.4L323.4 52.3L320.3 51.6L319.8 50.3L313.0 53.3L313.1 51.6L310.0 51.9L312.7 50.5L316.3 45.8L317.7 46.0L317.4 47.2L318.8 46.8L319.6 47.5ZM341.4 28.0L343.9 27.0L347.6 28.3L349.7 29.5L349.3 30.7L353.4 30.1L354.6 31.8L359.0 32.8L360.3 33.9L361.1 36.4L356.6 37.6L360.7 39.4L363.8 40.0L365.7 42.5L369.0 42.7L367.5 44.6L362.4 47.8L360.3 46.6L358.1 44.0L355.2 44.3L354.2 45.9L355.7 47.5L358.1 48.8L358.7 49.5L359.0 52.3L357.4 54.3L354.9 53.6L350.4 51.3L354.0 55.4L354.0 56.4L348.5 55.3L344.5 53.7L342.5 52.3L343.6 51.5L338.5 48.7L338.2 49.5L331.7 50.0L330.3 49.0L332.8 46.9L341.4 46.5L341.2 45.6L342.6 44.2L346.7 41.5L346.4 39.4L343.8 38.1L340.1 37.2L341.8 36.5L340.5 34.8L338.8 34.7L337.7 33.7L336.1 34.5L332.2 34.9L325.0 34.3L318.1 33.1L317.0 32.2L319.9 31.0L317.0 31.0L318.1 28.3L321.3 26.0L324.1 25.0L329.7 24.3L327.1 25.9L327.6 27.5L330.8 25.5L336.5 24.4L338.3 27.1L336.9 28.8L341.4 28.0ZM313.1 23.4L317.1 23.5L320.5 24.1L315.8 26.4L313.1 26.9L309.6 28.9L307.3 28.8L307.7 26.5L308.7 25.2L310.6 24.1L313.1 23.4ZM262.0 18.5L272.9 15.1L278.7 14.8L276.5 16.6L274.2 17.5L264.1 19.0L262.0 18.5ZM189.9 79.5L192.3 79.3L189.3 82.7L189.8 85.1L188.8 85.1L188.3 83.7L188.3 82.4L187.8 81.4L189.0 79.1L189.9 79.5ZM303.1 10.9L310.6 12.1L311.0 13.2L310.8 14.2L307.9 13.9L305.6 13.1L301.5 13.0L304.0 12.3L302.3 11.8L303.1 10.9ZM201.4 96.4L199.9 96.8L196.8 95.4L196.7 94.3L195.1 93.2L195.2 92.3L193.1 91.8L193.1 90.1L193.8 89.4L199.1 90.9L199.7 93.4L201.4 94.7L201.4 96.4ZM260.4 22.6L262.7 23.2L267.6 23.3L270.0 25.1L260.3 27.6L256.2 29.4L255.1 30.5L248.6 31.8L248.6 30.7L245.2 29.3L253.7 24.6L253.3 23.0L260.4 22.6ZM290.5 19.1L292.6 18.7L294.6 18.8L293.8 20.1L291.6 21.2L284.6 21.6L278.7 22.7L275.6 22.8L276.1 22.0L281.2 20.8L272.1 21.1L269.8 20.7L274.8 18.3L277.3 17.6L282.0 18.4L284.0 19.9L287.3 20.1L286.7 17.7L289.3 16.8L291.0 17.1L290.5 19.1ZM287.0 26.1L288.4 27.2L286.9 31.6L292.1 34.1L291.0 35.3L287.5 35.5L288.1 36.5L286.6 37.5L280.1 36.4L273.0 37.5L263.5 38.1L263.4 36.8L261.2 36.1L259.1 36.4L258.3 34.3L269.3 33.2L265.8 32.6L258.4 32.8L258.2 31.8L263.8 30.7L260.6 30.8L257.7 30.1L263.5 27.1L270.2 25.5L271.8 26.0L269.8 27.2L274.9 26.4L276.6 27.8L280.0 26.4L281.1 27.3L280.7 29.8L282.5 28.8L283.3 26.1L285.4 25.7L287.0 26.1ZM298.4 27.1L297.6 25.4L300.9 24.2L302.8 24.7L306.6 24.4L306.6 25.1L303.8 26.4L306.0 27.5L303.9 29.8L299.9 30.8L298.1 30.6L297.4 29.6L293.9 27.6L294.6 26.8L298.4 27.1ZM288.0 24.8L290.7 24.7L291.8 25.3L288.6 27.0L287.0 25.2L288.0 24.8ZM310.5 17.0L311.0 18.1L310.0 19.4L307.6 21.2L304.1 21.5L302.3 21.1L303.6 19.7L300.3 19.8L301.8 17.9L303.8 18.0L307.4 17.2L310.0 17.3L310.5 17.0ZM323.8 8.0L325.8 7.3L327.8 7.2L327.6 6.7L331.9 6.6L333.0 7.7L338.2 8.6L338.3 10.1L339.9 10.8L336.7 11.5L331.7 13.3L324.6 13.1L323.4 12.2L324.3 11.3L326.3 10.7L322.9 10.7L321.6 10.0L321.5 9.0L323.8 8.0ZM334.9 5.3L344.2 4.5L347.7 3.7L349.8 3.8L351.0 4.4L353.6 3.3L359.8 2.8L371.4 2.6L383.4 3.0L389.8 3.8L389.2 4.3L377.4 6.1L381.3 6.1L372.5 8.0L368.0 9.8L362.3 10.6L356.5 10.9L358.8 11.1L357.2 11.6L357.9 12.7L347.4 15.8L347.2 16.4L350.6 16.3L350.2 16.9L344.0 18.3L339.5 17.7L333.5 18.0L327.3 17.6L328.0 16.4L332.0 15.9L332.4 14.2L333.7 14.0L338.0 15.0L336.6 13.5L333.9 13.1L336.2 12.2L340.0 11.6L341.3 10.8L339.4 9.9L339.7 8.8L345.9 9.1L349.5 8.3L339.0 8.2L336.6 7.5L336.0 6.6L334.5 6.0L334.9 5.3ZM341.5 41.1L339.7 41.9L337.3 42.0L337.4 40.7L339.1 39.2L341.3 38.8L342.5 39.5L341.5 41.1ZM300.8 35.6L301.4 36.6L299.5 37.5L297.2 36.7L295.3 37.0L293.3 35.8L298.0 33.8L300.6 35.0L300.8 35.6ZM345.2 92.2L346.2 91.9L349.1 92.7L351.2 94.0L351.1 94.5L349.9 94.6L347.1 93.6L345.2 92.2ZM344.0 100.9L344.4 102.4L346.1 102.8L348.4 102.8L346.8 104.0L345.9 104.2L343.1 102.9L342.8 101.9L344.0 100.9Z" data-cc="CA"><title>Canada</title></path>
+<path d="M203.9 94.8L270.6 94.8L271.1 93.7L271.9 93.7L271.6 95.3L272.2 95.9L276.0 96.5L278.0 97.5L280.1 97.1L283.6 97.9L286.1 97.0L293.0 101.3L292.9 102.2L293.4 102.5L293.1 102.8L294.3 102.5L294.5 103.8L295.2 103.8L295.4 104.1L294.9 104.7L297.0 106.2L296.2 111.7L292.1 116.7L292.9 117.7L303.4 113.9L303.4 112.1L304.7 111.6L309.4 111.5L310.6 110.3L315.5 107.2L323.8 107.2L324.3 106.5L326.3 105.8L329.1 102.0L331.6 99.6L332.2 100.5L334.0 99.9L334.8 100.8L333.6 105.1L334.7 106.8L334.8 107.8L331.8 109.4L326.1 111.4L323.7 113.9L323.2 115.6L323.6 117.3L324.6 117.4L324.6 116.2L325.2 116.9L324.8 117.8L317.1 119.1L314.8 120.0L318.6 119.4L319.2 120.0L315.4 121.0L313.8 121.0L314.0 120.6L313.0 121.5L313.7 121.6L312.6 123.9L310.1 126.3L310.1 125.5L309.0 124.6L309.1 126.3L309.6 126.8L309.3 128.0L306.1 131.8L307.3 129.5L306.3 128.3L306.6 125.7L305.8 127.0L305.8 129.0L304.3 128.5L305.8 129.6L305.1 132.6L305.8 132.8L305.4 137.1L303.2 139.4L300.4 140.4L298.2 142.2L296.9 142.5L295.3 143.6L294.7 144.7L291.4 146.8L288.0 150.2L287.1 152.4L287.1 154.6L288.2 159.6L287.9 161.0L288.5 164.7L287.7 168.1L286.7 170.0L285.8 170.4L284.6 170.0L284.4 168.6L283.5 167.9L281.7 161.5L282.6 159.4L282.3 157.6L280.8 155.0L279.8 154.5L276.9 155.9L275.5 154.3L274.0 153.5L271.0 153.9L268.8 153.5L265.5 154.2L265.8 155.1L265.5 156.4L265.9 157.0L265.3 157.4L264.4 157.0L263.3 157.6L261.4 157.5L259.8 155.8L257.5 156.2L255.7 155.4L251.7 156.4L248.7 158.8L245.8 160.1L244.0 161.7L243.1 163.1L242.6 165.3L242.7 167.9L241.6 168.0L238.0 166.3L237.5 162.6L236.4 160.8L235.2 156.7L233.6 155.5L231.5 155.5L229.2 158.0L227.2 157.1L226.1 156.1L225.5 152.7L222.7 149.2L218.1 149.2L217.8 150.5L210.5 150.5L201.8 146.7L202.2 146.1L195.8 146.7L195.9 145.0L194.8 143.2L193.7 142.8L193.8 141.9L192.4 141.8L191.7 140.9L189.5 140.6L189.0 140.1L189.3 138.3L188.0 135.1L187.6 130.7L188.0 130.0L186.4 126.3L187.1 123.7L186.5 122.0L188.3 119.4L189.4 116.7L189.7 114.2L192.1 111.3L195.5 105.6L197.3 101.4L198.0 97.4L198.6 96.8L201.6 97.8L201.3 100.7L202.3 99.9L203.9 94.8ZM82.9 186.3L84.1 188.2L81.2 190.0L80.7 189.6L80.8 187.5L81.6 186.7L81.9 185.8L82.9 186.3ZM81.9 184.2L80.6 184.8L80.1 183.7L80.5 183.4L81.9 184.2ZM80.2 182.9L80.0 183.2L78.6 183.1L78.9 182.7L80.2 182.9ZM77.3 181.1L77.7 182.6L76.7 182.4L76.5 181.6L77.3 181.1ZM74.2 179.6L73.6 180.6L72.9 180.0L73.6 179.5L74.2 179.6ZM128.2 60.9L129.7 61.1L128.8 62.2L127.0 62.7L125.5 61.4L128.2 60.9ZM151.5 67.9L152.9 68.1L153.1 69.0L146.7 71.5L146.2 70.7L147.0 69.4L151.5 67.9ZM208.9 35.0L199.1 45.0L184.9 61.1L187.0 61.2L188.5 62.0L189.6 65.2L196.0 62.6L196.1 64.1L197.7 66.6L197.4 72.0L200.0 73.9L198.8 75.8L196.5 77.2L196.0 76.1L194.6 75.2L195.8 72.6L194.6 70.2L195.4 67.4L189.8 67.2L187.8 66.3L185.6 63.3L180.8 61.7L177.5 62.0L174.3 60.7L172.7 59.4L169.7 60.0L168.4 62.0L158.0 64.4L159.2 62.7L162.7 59.9L165.9 59.0L165.9 58.3L161.6 59.9L158.4 61.8L153.3 63.9L153.7 65.3L149.7 67.4L143.1 69.5L141.4 70.8L136.6 72.3L134.6 73.7L130.8 75.0L129.5 74.7L120.6 77.6L115.9 78.4L115.9 77.9L126.6 74.0L129.8 73.7L140.3 69.1L142.7 66.8L145.4 65.1L142.0 66.0L141.7 65.5L139.5 66.6L139.4 65.1L137.8 66.1L138.3 64.7L134.9 65.8L133.6 65.8L136.4 63.0L135.9 62.0L132.5 62.6L131.9 61.2L131.1 60.5L132.7 58.9L132.2 57.7L134.7 56.0L140.4 53.0L142.3 52.8L143.4 53.2L146.5 51.9L147.9 52.1L150.4 51.3L151.3 50.0L150.6 49.5L153.4 48.4L149.1 49.0L147.8 49.6L146.7 49.0L143.3 49.3L140.9 48.7L141.2 47.6L140.2 45.9L150.7 43.5L152.5 43.5L150.7 44.8L155.3 44.7L155.4 43.0L154.0 42.0L154.0 40.6L153.3 39.5L151.4 38.6L154.2 37.2L158.0 37.1L162.0 35.9L164.0 34.6L167.6 33.3L175.2 31.8L176.9 32.0L181.6 30.6L184.1 31.2L184.2 32.3L185.7 31.8L189.0 32.0L188.2 32.6L190.8 33.1L193.2 32.8L201.5 34.2L204.7 33.8L208.9 35.0ZM126.6 51.2L127.4 51.7L129.1 51.5L130.0 52.2L131.8 52.6L129.0 53.5L127.7 52.4L125.6 52.5L125.4 52.3L126.6 51.2Z" data-cc="US"><title>United States of America</title></path>
+<path d="M710.3 94.2L709.3 96.2L707.4 96.5L708.5 99.6L707.6 101.0L702.4 100.0L702.6 105.6L701.6 106.3L697.1 107.5L701.1 112.9L699.6 113.8L700.4 115.6L698.7 115.1L697.1 114.0L689.2 113.6L688.3 113.9L684.4 112.6L683.2 113.2L683.3 115.1L678.9 114.0L677.4 114.4L677.2 115.8L673.2 118.6L672.7 120.9L671.7 120.9L670.7 119.4L667.5 119.3L666.3 116.7L665.1 116.7L664.5 113.5L660.9 111.2L654.0 111.9L650.9 109.1L643.7 105.4L637.8 107.3L640.4 118.8L639.1 119.0L636.9 116.5L635.0 115.6L632.3 116.3L631.4 117.3L631.1 116.6L631.5 115.3L630.8 114.2L627.7 113.1L626.0 110.3L624.5 109.5L624.2 108.5L626.7 108.8L626.3 106.5L628.3 106.0L630.5 106.4L630.3 103.4L629.4 101.5L627.0 101.6L624.8 100.9L622.2 102.2L620.1 102.9L618.8 102.4L618.7 100.8L616.7 98.7L614.9 98.8L612.4 96.7L613.3 94.4L612.5 93.8L613.7 90.4L616.5 92.2L616.3 89.9L620.4 86.6L624.1 86.5L633.0 89.9L635.2 88.6L639.0 88.5L642.5 90.1L642.9 89.2L646.3 89.3L646.5 87.9L642.0 85.8L643.9 84.3L643.2 83.5L645.2 82.7L642.8 80.7L643.6 79.6L652.0 78.6L652.9 77.8L658.3 76.7L659.9 75.5L664.4 76.2L666.2 79.2L668.4 78.5L671.8 79.5L672.2 81.2L674.4 81.0L679.1 78.2L678.7 79.1L682.6 81.4L690.8 89.1L691.5 87.5L695.4 89.3L698.6 88.5L700.1 89.1L702.0 90.8L703.9 91.4L705.4 92.7L708.3 92.3L710.3 94.2Z" data-cc="KZ"><title>Kazakhstan</title></path>
+<path d="M640.4 118.8L637.8 107.3L643.7 105.4L650.9 109.1L654.0 111.9L660.9 111.2L664.5 113.5L665.1 116.7L666.3 116.7L667.5 119.3L670.7 119.4L671.7 120.9L672.7 120.9L673.2 118.6L677.2 115.8L678.0 116.1L676.5 118.2L678.6 119.4L680.2 118.6L683.6 120.2L681.0 122.5L678.0 122.3L677.4 121.4L677.6 119.9L674.4 120.7L674.1 122.7L673.3 124.4L671.1 124.3L670.8 125.7L672.8 126.4L673.9 128.8L673.2 132.0L671.1 131.3L669.7 131.3L669.4 129.4L662.7 126.5L657.4 122.8L655.4 119.5L654.4 119.0L651.7 119.1L650.6 118.5L649.8 116.0L646.1 114.3L644.4 116.1L642.5 117.2L643.2 118.8L640.4 118.8Z" data-cc="UZ"><title>Uzbekistan</title></path>
+<path d="M885.6 258.2L895.2 262.2L898.5 265.4L898.8 267.3L903.2 269.3L903.7 270.9L901.2 271.3L901.6 273.4L903.9 275.5L905.3 278.8L906.9 278.7L906.6 280.1L908.6 280.7L907.7 281.3L910.5 282.6L910.1 283.5L908.2 283.7L907.7 282.9L902.7 282.1L899.4 278.3L898.3 275.5L894.9 274.2L890.7 276.1L890.8 278.4L888.6 279.5L887.1 279.0L884.3 278.9L885.6 258.2ZM917.3 261.6L918.3 262.6L918.5 264.2L917.6 265.1L916.6 262.0L913.9 259.6L912.0 258.7L912.8 257.9L916.2 260.3L917.3 261.6ZM913.2 268.5L910.2 270.0L908.8 270.0L905.1 268.2L905.4 267.2L907.8 267.7L909.3 267.4L909.8 265.9L910.2 265.8L910.4 267.5L911.9 267.3L914.4 265.1L914.2 263.2L915.8 263.1L916.3 263.6L916.2 265.4L915.2 267.3L913.7 267.6L913.2 268.5ZM922.8 266.9L925.9 270.7L925.5 271.6L924.7 271.9L923.6 270.7L922.6 268.7L922.1 266.3L922.5 266.0L922.8 266.9Z" data-cc="PG"><title>Papua New Guinea</title></path>
+<path d="M885.6 258.2L884.3 278.9L882.1 276.3L879.4 275.6L878.7 276.5L875.2 276.6L876.6 274.0L878.4 273.2L877.9 269.7L876.8 267.1L871.6 264.4L869.4 264.1L865.4 261.2L864.5 262.7L863.5 263.0L862.9 261.9L862.9 260.5L860.9 258.9L863.9 257.8L865.8 257.8L865.6 257.0L861.6 257.0L860.6 255.1L858.1 254.5L857.0 253.0L860.7 252.2L862.1 251.2L866.5 252.5L867.6 258.8L870.3 260.7L872.7 257.3L875.9 255.4L878.3 255.4L882.7 257.6L885.6 258.2ZM840.6 278.1L840.8 279.7L838.8 282.1L836.4 282.8L836.1 282.4L836.4 281.3L837.8 279.4L840.6 278.1ZM866.3 271.8L866.2 269.4L867.4 267.2L868.0 268.2L867.9 269.7L866.3 271.8ZM822.2 236.9L820.7 239.8L822.8 242.8L822.4 244.2L825.5 247.1L822.3 247.5L821.3 249.7L821.5 252.5L818.8 254.7L818.7 257.9L817.5 262.7L817.1 261.6L814.0 263.0L812.9 261.1L811.0 260.9L809.7 259.9L806.4 261.0L805.4 259.5L803.6 259.6L801.4 259.3L801.1 255.0L799.7 254.2L798.4 251.5L798.0 248.7L798.3 245.8L799.9 243.7L800.4 245.8L802.3 247.6L804.0 246.9L805.8 247.1L807.4 245.5L808.7 245.3L811.3 246.1L813.5 245.5L814.8 241.1L815.8 240.0L816.7 236.4L819.8 236.4L822.2 236.9ZM853.8 258.9L856.7 259.8L857.6 262.2L855.4 260.9L849.7 260.7L850.4 259.0L853.8 258.9ZM846.8 262.0L845.0 261.4L844.5 260.1L847.2 259.9L847.9 260.9L846.8 262.0ZM849.9 243.1L850.1 244.8L851.7 245.1L852.0 246.4L851.9 249.2L850.5 248.9L850.0 250.8L851.2 252.5L850.4 252.8L849.3 250.8L848.5 246.8L849.0 244.3L849.9 243.1ZM836.2 247.2L839.4 247.1L842.1 244.8L842.5 245.5L840.4 248.6L838.3 249.3L835.7 248.6L828.7 249.2L828.4 251.6L830.8 254.5L832.3 253.0L837.4 251.9L837.1 253.4L836.0 252.9L834.7 254.8L832.3 256.0L834.8 260.1L834.3 261.2L836.6 264.8L836.5 266.9L834.9 267.8L833.9 266.7L835.4 264.1L832.6 265.4L832.0 264.5L832.4 263.3L830.5 261.4L830.8 258.3L829.0 259.3L829.0 267.5L827.2 268.0L826.1 267.0L827.0 264.1L826.7 261.1L825.5 261.0L824.8 258.9L825.9 256.8L827.8 249.5L828.3 248.2L830.6 245.9L832.8 246.8L836.2 247.2ZM827.4 282.5L824.0 280.3L826.6 279.6L828.8 281.6L828.6 282.4L827.4 282.5ZM830.8 277.0L832.6 276.8L835.2 275.6L834.6 277.4L830.5 278.3L826.9 277.9L826.9 276.7L829.2 276.1L830.8 277.0ZM822.4 276.5L824.1 276.2L824.7 277.6L819.6 278.6L818.1 278.6L819.2 276.8L820.7 276.7L821.5 275.6L822.4 276.5ZM796.2 270.3L796.5 271.5L801.7 271.8L802.4 270.5L807.4 272.0L808.2 274.0L812.3 274.6L815.5 276.5L812.3 277.7L809.4 276.4L804.1 276.3L798.5 274.5L796.5 274.2L795.4 274.6L790.5 273.3L790.1 271.9L787.6 271.7L789.6 268.7L792.9 268.8L796.2 270.3ZM785.5 253.4L785.9 255.6L786.8 257.4L788.8 257.7L790.1 259.7L789.3 263.6L789.0 268.5L786.0 268.6L783.8 265.9L780.4 263.4L777.3 258.9L773.9 252.1L771.5 249.4L769.7 244.2L767.2 242.2L765.7 239.5L763.6 237.8L760.6 234.3L760.3 232.7L766.3 233.4L768.9 236.5L772.6 240.0L775.2 243.4L778.0 243.4L780.3 245.6L782.0 248.2L784.0 249.7L782.9 252.3L784.5 253.4L785.5 253.4Z" data-cc="ID"><title>Indonesia</title></path>
+<path d="M338.1 416.2L341.5 419.9L345.1 421.7L348.7 422.4L348.1 423.9L346.0 424.1L344.4 423.0L340.5 423.0L338.1 416.2ZM349.2 345.9L348.7 351.8L349.3 354.9L348.8 355.6L349.1 359.4L352.8 362.1L352.9 364.3L354.7 365.7L354.8 367.2L353.2 371.3L349.7 373.0L344.8 373.6L341.9 373.3L342.8 375.2L342.8 377.6L343.7 379.2L342.4 380.3L339.9 380.7L337.2 379.6L336.5 380.4L337.6 383.5L339.5 384.5L340.6 383.5L341.7 385.1L339.7 386.1L338.2 388.0L338.5 392.9L336.2 392.9L334.7 394.5L334.6 396.8L337.7 399.1L340.2 399.7L340.1 402.5L337.8 404.2L337.3 407.8L335.5 409.0L335.0 410.5L336.8 413.6L339.0 415.4L329.7 414.3L328.1 412.6L327.4 410.3L325.9 410.5L324.6 409.4L323.3 406.1L324.7 404.8L324.9 402.8L324.1 401.3L324.6 398.6L324.2 394.5L323.4 392.7L324.3 392.1L323.7 390.9L322.4 390.3L322.8 389.0L321.4 387.8L319.8 384.1L320.6 383.5L319.2 379.7L319.0 373.6L320.2 372.5L318.7 369.4L318.0 366.4L319.5 364.4L318.9 361.7L319.7 358.6L319.1 355.7L318.3 355.1L316.1 349.6L317.1 346.3L316.3 343.2L316.8 340.3L318.0 337.3L319.6 335.4L318.6 334.1L319.0 333.1L318.1 327.8L320.8 326.2L321.3 322.9L320.9 322.1L322.8 319.2L326.4 320.0L328.2 322.3L328.9 319.7L332.0 319.9L338.0 325.7L340.3 326.2L343.8 328.6L346.7 329.8L347.2 331.2L345.2 336.1L351.0 337.4L353.1 336.9L355.1 334.5L355.2 331.7L356.5 331.1L358.0 332.9L358.3 335.4L354.7 338.5L349.2 345.9Z" data-cc="AR"><title>Argentina</title></path>
+<path d="M338.1 416.2L340.5 423.0L344.4 423.0L344.1 424.2L342.4 425.2L339.8 424.8L337.8 423.9L335.2 423.5L328.7 420.2L324.2 416.9L333.9 420.6L334.6 419.2L334.6 417.1L336.3 415.9L338.1 416.2ZM312.4 305.7L313.9 307.9L314.5 310.2L316.1 311.5L315.6 314.6L317.4 318.2L319.0 322.5L320.9 322.1L321.3 322.9L320.8 326.2L318.1 327.8L319.0 333.1L318.6 334.1L319.6 335.4L318.0 337.3L316.8 340.3L316.3 343.2L317.1 346.3L316.1 349.6L318.3 355.1L319.1 355.7L319.7 358.6L318.9 361.7L319.5 364.4L318.0 366.4L318.7 369.4L320.2 372.5L319.0 373.6L319.2 379.7L320.6 383.5L319.8 384.1L321.4 387.8L322.8 389.0L322.4 390.3L323.7 390.9L324.3 392.1L323.4 392.7L324.2 394.5L324.6 398.6L324.1 401.3L324.9 402.8L324.7 404.8L323.3 406.1L324.6 409.4L325.9 410.5L327.4 410.3L328.1 412.6L329.7 414.3L337.9 415.2L335.8 415.2L333.2 417.0L333.8 419.9L332.9 419.9L329.9 418.9L322.8 415.1L321.4 413.2L321.4 411.4L319.5 409.4L317.4 404.1L317.4 401.2L319.2 398.8L315.2 397.9L316.7 395.1L316.0 389.9L319.0 391.0L318.5 384.5L316.6 383.7L316.9 387.6L315.2 387.2L314.0 376.9L314.7 374.7L313.2 371.6L312.1 368.0L313.1 367.9L314.2 357.7L314.4 353.0L312.9 348.2L313.2 345.6L312.2 341.6L313.1 337.7L312.6 331.6L312.4 317.8L310.5 308.1L311.8 307.3L312.4 305.7Z" data-cc="CL"><title>Chile</title></path>
+<path d="M580.2 264.2L580.6 267.2L580.3 268.8L580.9 270.6L582.4 272.4L583.8 276.4L582.7 276.1L579.1 276.6L578.3 277.0L577.5 279.0L578.1 280.4L577.1 287.3L579.7 289.1L580.5 288.6L580.6 292.0L578.5 292.0L576.5 288.9L574.4 288.4L573.8 286.8L572.2 287.8L570.0 287.3L569.1 285.9L566.1 285.7L566.0 284.7L563.8 284.4L560.3 285.1L560.5 281.3L559.6 280.1L559.4 278.2L559.8 276.3L559.3 275.1L559.3 273.1L556.0 273.1L556.2 272.0L554.8 272.0L554.7 272.5L553.0 272.6L551.9 275.3L550.4 274.8L547.7 275.5L546.0 272.9L544.6 268.6L536.5 268.6L533.6 269.3L533.3 268.3L534.0 268.0L534.5 265.8L535.5 265.1L536.2 265.5L537.2 264.2L538.7 264.3L538.8 265.2L539.8 265.7L543.8 261.2L543.7 258.6L544.9 255.5L547.9 252.4L548.2 251.3L548.8 249.1L549.0 244.5L550.3 240.8L550.7 236.7L551.7 235.1L553.2 234.1L557.2 236.3L561.2 237.2L562.4 235.1L563.7 235.4L566.7 233.8L567.8 234.5L568.7 234.4L569.1 233.6L570.1 233.4L573.9 233.8L574.8 233.4L576.5 236.0L577.7 236.4L578.4 235.9L579.7 236.1L581.2 235.4L581.9 236.8L584.3 238.9L584.2 242.6L585.3 243.0L583.3 245.0L581.7 248.1L581.6 250.6L580.9 251.9L580.9 254.2L580.1 255.1L580.0 257.0L579.6 257.3L579.4 259.0L580.0 260.4L580.2 264.2Z" data-cc="CD"><title>Democratic Republic of the Congo</title></path>
+<path d="M613.7 255.3L612.1 252.7L612.1 241.2L615.1 236.6L616.9 236.5L619.3 234.3L622.9 234.2L630.3 224.7L633.3 220.1L633.1 213.9L636.6 213.0L637.8 211.9L638.9 211.9L638.9 216.3L637.7 220.9L635.0 228.5L632.7 233.1L627.3 241.0L618.0 249.1L615.0 252.9L613.7 255.3Z" data-cc="SO"><title>Somalia</title></path>
+<path d="M607.1 264.8L603.2 261.6L603.1 259.8L592.7 253.0L592.7 249.7L595.8 244.0L594.3 238.7L592.9 236.6L596.4 232.6L597.8 233.1L597.9 234.9L598.8 235.9L600.7 235.9L604.2 238.6L605.7 238.6L608.2 239.2L608.9 237.9L611.4 236.5L612.5 237.6L614.4 237.6L612.1 241.2L612.1 252.7L613.7 255.3L611.8 256.6L611.1 257.9L610.1 258.1L609.7 260.4L608.8 261.6L608.2 263.8L607.1 264.8Z" data-cc="KE"><title>Kenya</title></path>
+<path d="M567.0 224.0L563.9 221.7L564.1 218.1L562.5 216.1L562.2 214.0L561.2 213.0L561.1 211.2L560.5 210.0L559.6 210.1L560.5 207.7L560.1 206.3L561.0 205.4L560.4 204.6L562.3 200.3L564.6 200.5L564.0 186.6L567.1 186.6L566.8 180.2L598.6 180.2L599.6 183.4L599.1 183.9L600.9 191.0L603.5 193.0L602.2 194.8L600.3 195.3L599.5 196.3L598.3 203.1L598.7 204.3L598.4 207.0L597.4 210.2L595.8 211.7L594.5 215.5L593.2 216.3L592.5 219.7L592.6 222.5L592.5 220.0L592.1 220.0L591.8 217.3L590.3 216.1L590.0 213.8L590.2 211.4L588.9 211.2L588.8 211.9L587.2 212.1L587.8 213.0L588.1 214.9L585.4 218.9L584.0 219.3L581.6 217.4L580.6 218.1L580.4 219.0L579.0 219.6L578.9 220.2L576.2 220.2L575.8 219.6L573.8 219.5L572.9 220.0L572.1 219.8L570.2 217.0L568.2 217.5L566.9 221.8L565.1 222.7L567.0 224.0Z" data-cc="SD"><title>Sudan</title></path>
+<path d="M564.0 187.9L564.6 200.5L562.3 200.3L560.4 204.6L561.0 205.4L560.1 206.3L560.5 207.7L559.6 210.1L560.5 210.0L561.1 211.2L561.2 213.0L562.2 214.0L562.2 214.7L560.5 215.3L559.1 216.5L557.2 220.0L554.7 221.5L552.0 221.3L551.3 221.6L551.6 222.7L549.0 225.0L545.6 226.2L544.4 225.5L543.9 226.3L541.7 226.5L542.1 225.7L540.8 222.2L539.6 221.6L538.0 219.8L538.6 218.3L539.8 218.6L542.1 218.4L540.6 215.5L540.5 211.3L539.3 209.3L539.6 207.8L537.9 207.7L537.8 205.7L536.7 204.5L537.8 200.3L541.2 197.3L541.2 193.2L542.1 186.7L542.7 185.4L541.5 184.3L541.4 183.3L540.4 182.4L539.6 177.5L542.3 175.8L564.0 187.9Z" data-cc="TD"><title>Chad</title></path>
+<path d="M307.4 187.5L307.1 190.5L306.4 191.0L307.0 192.0L306.8 192.8L305.1 192.3L302.2 192.3L300.9 192.9L299.5 191.9L299.9 190.8L304.3 191.5L305.4 190.8L304.3 189.5L304.4 188.2L302.8 187.7L303.5 186.9L307.4 187.5Z" data-cc="HT"><title>Haiti</title></path>
+<path d="M306.8 192.8L307.0 192.0L306.4 191.0L307.1 190.5L307.4 187.5L307.8 187.0L309.9 187.0L311.4 187.8L312.1 187.7L312.5 188.9L314.0 188.8L313.8 189.7L314.9 189.8L316.1 191.0L315.0 192.3L313.8 191.6L311.7 191.6L311.1 192.2L310.1 192.4L309.8 191.6L308.8 192.1L307.5 194.2L306.9 193.7L306.8 192.8Z" data-cc="DO"><title>Dominican Republic</title></path>
+<path d="M864.3 31.3L865.4 30.2L867.8 32.0L865.7 32.1L864.3 31.3ZM620.1 102.9L619.4 104.7L617.1 105.2L615.3 108.5L618.1 111.4L618.2 113.6L621.6 117.3L620.3 118.5L620.0 119.3L618.9 119.1L616.8 117.2L614.4 116.4L613.4 115.1L611.0 114.4L609.6 114.9L609.0 114.3L605.4 112.8L599.5 111.8L599.2 112.1L595.7 109.5L592.7 108.3L590.3 106.5L592.0 106.0L593.6 103.4L592.0 102.2L595.4 100.9L595.2 100.2L593.1 100.7L593.0 99.3L594.1 98.5L596.4 98.2L596.6 97.2L595.8 95.5L596.5 93.9L596.3 93.0L592.5 92.0L591.1 92.0L589.4 90.6L587.7 91.1L584.4 90.0L584.4 89.4L583.3 88.1L581.4 87.9L581.1 87.0L581.5 86.4L579.7 84.7L576.6 84.8L576.1 85.5L575.2 85.4L573.6 82.4L575.9 82.3L576.7 81.6L575.9 80.8L574.3 80.3L574.3 79.7L573.3 79.2L571.5 77.2L571.9 76.4L571.4 75.0L569.0 74.3L567.9 74.7L567.4 73.9L564.9 73.2L563.5 70.0L562.3 69.3L563.1 68.4L562.0 65.7L563.3 64.0L562.9 63.5L565.2 61.9L562.6 60.5L568.5 55.2L569.0 53.8L565.4 51.9L566.0 50.0L563.6 47.9L564.6 45.6L561.5 42.4L563.0 40.4L559.5 38.6L559.4 36.7L564.3 35.4L566.2 34.4L570.0 36.1L575.8 36.7L584.5 39.8L586.5 41.0L587.2 42.9L585.2 44.3L581.9 45.0L571.9 42.9L570.4 43.3L574.4 45.3L575.6 49.4L580.4 51.0L580.4 49.7L578.8 48.5L579.9 47.4L585.6 49.1L587.2 48.5L585.2 46.4L589.5 43.7L591.5 43.9L593.7 44.8L594.4 43.0L592.2 41.3L592.7 39.7L590.7 38.0L596.8 38.9L598.5 40.4L595.9 40.7L596.4 42.3L598.3 43.2L601.4 42.6L601.4 40.9L611.8 37.3L613.4 37.4L612.0 39.0L614.7 39.3L615.8 38.4L619.7 38.3L622.3 37.2L625.4 38.8L627.0 37.0L624.2 35.5L624.9 34.6L631.3 35.4L643.6 39.3L644.3 37.9L641.5 36.5L641.1 35.9L638.5 35.6L638.6 34.4L636.0 31.5L638.6 29.1L638.7 26.7L639.9 26.2L645.6 26.9L646.8 28.4L646.0 30.5L647.7 31.3L649.4 33.2L650.8 36.8L653.9 38.5L653.9 40.3L651.7 44.2L654.3 44.6L654.7 43.6L656.7 42.9L656.6 41.5L657.7 40.2L655.7 38.7L655.8 36.9L653.4 36.7L652.1 35.2L652.3 32.5L648.5 30.4L651.1 28.6L649.6 26.8L650.6 26.7L652.5 28.1L653.1 30.7L655.6 31.1L653.6 29.3L656.3 28.2L660.4 28.1L665.1 29.6L662.0 27.4L660.1 24.7L663.2 24.2L672.1 23.9L669.6 22.6L670.7 21.0L672.9 20.9L675.7 19.7L680.6 19.3L680.7 18.6L685.6 18.4L687.7 19.0L690.9 17.7L694.5 17.7L694.1 16.7L695.0 15.6L698.6 14.6L702.6 15.4L700.6 16.0L705.3 16.4L706.9 17.6L708.1 17.0L713.8 17.0L719.3 18.2L721.7 19.1L722.5 20.4L717.1 22.6L716.3 23.3L722.6 24.3L723.9 23.8L726.4 25.5L726.7 24.8L729.5 24.4L736.3 24.8L737.9 26.0L746.6 26.4L744.8 24.4L752.6 24.9L757.2 26.2L759.8 27.9L759.6 29.0L764.1 31.0L768.4 32.1L767.7 29.4L772.1 30.5L774.8 29.8L779.6 30.6L780.3 29.9L784.0 30.3L780.0 27.8L781.5 26.7L801.5 28.4L805.0 30.0L812.5 32.0L820.2 31.5L824.8 31.9L827.7 33.0L829.7 34.9L833.1 35.7L835.3 35.1L838.9 35.1L843.4 35.6L847.0 35.3L853.4 37.7L855.0 36.8L851.2 35.1L850.7 33.9L858.2 34.7L862.3 34.5L869.8 35.8L874.2 37.0L887.5 47.9L886.1 49.1L883.1 48.9L886.7 50.4L892.5 53.5L894.1 54.6L894.3 55.4L889.6 54.8L885.7 56.9L884.1 57.2L881.4 61.0L881.9 62.3L876.7 60.3L873.1 62.6L871.0 61.5L870.1 62.8L866.7 62.4L867.8 64.3L867.7 67.1L868.9 68.3L872.1 68.9L875.6 73.2L873.6 73.3L874.7 75.8L876.8 77.1L874.0 78.6L876.0 82.0L873.1 82.8L874.8 85.9L873.5 88.7L860.0 75.5L857.6 71.4L858.0 69.7L856.9 68.3L859.9 67.6L860.6 64.0L861.7 61.0L863.4 58.7L861.2 54.7L858.7 54.9L859.8 57.3L857.2 60.4L852.0 56.9L847.2 57.9L846.1 62.7L849.5 64.5L841.9 65.5L840.3 63.4L836.4 63.0L834.8 64.4L827.5 63.9L820.8 64.8L814.3 77.5L818.3 77.8L820.7 79.7L823.5 80.4L823.9 78.9L826.6 79.1L832.4 82.4L834.2 85.0L834.5 88.0L836.7 91.6L838.7 96.6L837.8 101.0L838.2 103.2L835.0 112.3L832.6 114.1L831.1 114.1L828.7 112.6L826.6 114.9L826.7 116.0L825.3 113.8L826.5 113.7L825.0 110.0L822.9 107.4L824.4 106.2L827.7 106.8L827.7 103.8L826.6 100.4L826.9 99.2L826.5 96.5L823.0 97.4L821.7 98.6L818.0 98.6L815.3 95.7L811.2 93.5L806.4 92.5L803.7 89.5L796.7 83.3L793.9 82.2L789.9 81.3L786.8 81.4L784.2 81.9L783.2 83.4L784.9 84.1L785.9 85.8L785.2 86.8L784.9 90.0L785.7 91.3L783.3 93.3L779.8 92.1L777.1 92.4L775.3 91.3L773.7 91.0L771.3 93.2L768.4 93.7L766.6 94.4L761.1 94.0L758.9 92.4L755.8 90.9L753.2 90.5L748.4 91.5L744.3 90.2L742.8 87.9L737.3 86.8L734.0 85.5L733.0 88.7L734.8 90.5L733.5 92.6L727.2 91.7L725.0 90.3L722.5 90.3L720.0 89.3L717.0 90.8L713.5 93.4L710.3 94.2L708.3 92.3L705.4 92.7L703.9 91.4L702.0 90.8L700.1 89.1L698.6 88.5L695.4 89.3L691.5 87.5L690.8 89.1L682.6 81.4L678.7 79.1L679.1 78.2L674.4 81.0L672.2 81.2L671.8 79.5L668.4 78.5L666.2 79.2L664.4 76.2L659.9 75.5L658.3 76.7L652.9 77.8L652.0 78.6L643.6 79.6L642.8 80.7L645.2 82.7L643.2 83.5L643.9 84.3L642.0 85.8L646.5 87.9L646.3 89.3L642.9 89.2L642.5 90.1L639.0 88.5L635.2 88.6L633.0 89.9L624.1 86.5L620.4 86.6L616.3 89.9L616.5 92.2L613.7 90.4L612.5 93.8L613.3 94.4L612.4 96.7L614.9 98.8L616.7 98.7L618.7 100.8L618.8 102.4L620.1 102.9ZM671.1 7.1L674.5 6.6L679.3 7.7L685.9 9.8L687.5 11.9L683.7 12.2L677.8 11.5L673.9 10.6L670.9 9.0L667.9 8.6L671.1 7.1ZM692.0 11.0L698.1 12.3L698.5 13.2L688.7 14.1L689.2 11.1L692.0 11.0ZM768.9 18.4L774.1 18.5L782.7 19.8L783.4 21.7L776.1 21.6L773.5 22.2L767.8 20.6L766.9 18.9L768.9 18.4ZM789.5 20.4L795.2 21.0L794.2 22.0L790.8 21.8L785.9 20.8L785.4 20.0L789.5 20.4ZM778.8 25.4L779.6 24.4L781.8 24.1L785.7 25.1L786.7 25.8L778.8 25.4ZM582.3 8.0L588.5 7.6L589.2 8.2L591.4 7.3L594.4 7.8L588.0 9.3L585.8 8.8L586.4 8.1L582.3 8.0ZM553.0 78.7L548.7 78.7L545.8 78.4L546.2 77.1L549.3 76.1L552.9 77.1L553.0 78.7ZM606.3 24.4L610.0 22.2L609.0 21.0L618.3 18.1L624.5 17.7L627.3 16.8L630.8 16.5L632.7 17.4L631.9 18.2L620.4 20.6L615.5 23.0L611.6 28.0L612.9 30.1L617.7 32.3L609.8 32.2L608.8 31.0L604.8 30.3L604.0 28.9L605.8 28.3L605.2 26.9L608.2 24.7L606.3 24.4ZM834.7 80.5L837.6 83.4L839.7 86.4L848.8 94.9L844.6 93.9L845.9 98.4L850.3 101.5L851.5 103.7L848.5 101.8L848.4 104.2L846.3 101.6L838.8 88.9L835.4 85.9L832.7 81.7L833.9 80.4L831.9 79.0L832.6 78.6L834.7 80.5ZM130.6 41.7L128.4 43.4L129.0 44.1L130.9 42.1L136.1 42.5L137.4 45.1L133.9 46.3L130.0 46.6L126.9 49.3L125.4 49.9L123.5 49.8L122.9 48.8L121.0 48.0L121.9 46.8L120.3 46.4L117.4 46.7L117.4 45.8L119.0 44.7L115.7 45.4L115.1 46.7L112.5 47.9L125.8 37.0L128.3 39.0L130.6 41.7ZM135.1 31.8L132.2 32.0L134.6 30.2L136.7 30.1L138.7 30.8L138.0 31.2L135.1 31.8ZM582.0 104.2L582.5 103.5L585.1 104.2L587.3 106.0L589.8 105.8L589.5 106.9L586.9 107.4L583.8 109.2L582.3 108.6L582.6 107.1L579.8 106.2L580.2 105.6L582.4 104.6L582.0 104.2Z" data-cc="RU"><title>Russia</title></path>
+<path d="M291.3 165.0L294.3 164.8L294.2 165.7L291.3 166.2L291.3 165.0ZM294.6 164.2L296.4 165.6L295.6 167.9L295.2 167.5L295.5 165.8L294.6 164.2ZM292.5 170.0L293.3 170.1L293.8 172.8L293.5 174.6L292.9 174.8L292.5 173.0L291.6 172.0L292.5 170.0Z" data-cc="BS"><title>The Bahamas</title></path>
+<path d="M355.0 413.9L357.3 412.0L359.5 412.8L360.6 411.6L362.9 413.0L362.5 414.0L359.5 414.9L358.2 413.9L356.6 415.2L355.0 413.9Z" data-cc="FK"><title>Falkland Islands</title></path>
+<path d="M528.1 10.1L528.7 9.3L531.4 9.2L540.4 11.7L535.8 12.6L535.1 14.3L533.5 14.8L532.9 16.8L530.6 16.9L526.3 15.4L527.9 14.6L525.0 13.9L521.1 11.9L519.4 10.1L524.4 9.3L525.5 10.1L528.1 10.1ZM564.3 35.4L559.4 36.7L559.9 34.8L557.0 33.8L554.0 34.7L553.3 36.6L551.6 37.8L549.2 37.2L546.5 37.3L544.0 35.9L542.9 36.6L541.6 36.7L541.5 38.5L537.5 38.0L537.2 39.5L535.2 39.5L532.2 44.5L529.2 48.4L530.1 49.4L529.4 50.5L527.3 50.4L526.1 53.0L526.5 56.8L528.0 58.3L527.5 61.6L525.8 63.6L524.9 65.3L523.3 63.5L519.0 66.9L516.0 67.6L512.8 66.1L511.9 63.0L511.0 56.3L513.0 54.5L518.6 52.1L522.8 49.2L531.0 40.1L539.6 34.7L543.9 33.5L547.3 33.7L550.1 31.5L553.8 31.6L557.4 31.1L564.2 33.0L561.7 33.7L564.3 35.4ZM550.7 9.2L548.3 10.4L542.9 10.7L537.3 10.3L536.9 9.7L534.2 9.6L532.0 8.6L537.5 8.0L540.3 8.5L542.0 7.9L550.7 9.2ZM547.0 14.3L542.9 15.3L539.5 14.7L540.6 14.1L539.3 13.3L543.2 12.9L544.1 13.7L547.0 14.3Z" data-cc="NO"><title>Norway</title></path>
+<path d="M416.6 3.8L423.4 2.6L429.5 2.7L432.2 2.0L452.4 2.1L462.9 3.6L459.4 4.4L442.8 4.6L443.5 5.0L450.0 4.8L455.2 5.5L458.8 4.9L460.1 5.6L457.8 6.8L471.6 5.2L476.9 5.6L477.8 6.5L469.0 8.6L463.0 8.9L467.3 9.0L463.0 12.2L462.5 14.8L464.6 16.4L461.5 16.5L458.2 17.2L461.6 18.5L461.7 20.6L459.5 20.9L461.7 23.0L457.3 23.2L459.4 24.2L458.6 25.1L453.0 25.5L455.2 27.3L455.0 28.4L451.2 27.4L450.1 28.1L452.7 28.7L455.0 30.3L455.5 32.4L451.7 32.9L448.1 30.4L448.5 32.2L445.8 33.6L454.0 33.8L442.1 38.3L433.4 39.2L431.0 40.3L427.4 43.2L422.4 45.1L414.6 46.5L412.4 48.3L411.8 50.2L410.2 52.1L406.1 54.3L406.4 56.5L402.9 61.7L399.7 61.9L397.0 59.5L392.6 59.5L390.9 57.9L390.3 55.2L387.6 51.6L387.1 49.8L387.7 47.3L385.6 44.8L387.1 42.7L386.0 41.8L389.3 38.6L392.8 37.6L394.0 36.5L395.2 34.4L389.2 36.1L387.0 35.2L387.6 33.4L388.9 32.0L390.8 32.0L394.7 32.7L390.4 30.1L388.2 30.5L386.8 29.8L390.1 27.4L389.3 26.4L387.3 22.0L385.2 21.0L385.8 20.0L381.3 18.5L367.2 18.6L363.0 16.3L372.5 15.4L364.7 14.8L361.1 13.8L362.0 12.9L377.5 10.7L378.8 9.9L374.4 9.1L376.6 8.2L386.9 6.5L386.9 5.5L397.4 4.7L402.9 4.6L404.4 5.3L409.9 4.2L419.5 5.7L415.9 4.6L416.6 3.8Z" data-cc="GL"><title>Greenland</title></path>
+<path d="M666.5 404.0L667.8 405.0L670.0 405.4L668.7 407.3L665.0 407.5L666.5 404.0Z" data-cc="TF"><title>French Southern and Antarctic Lands</title></path>
+<path d="M840.6 278.1L841.0 277.4L843.4 276.7L846.2 276.2L847.2 276.6L846.1 277.4L840.8 279.7L840.6 278.1Z" data-cc="TL"><title>East Timor</title></path>
+<path d="M543.0 340.7L544.3 339.1L545.3 340.0L545.7 341.4L548.5 342.2L549.9 342.0L552.3 340.3L552.9 328.6L553.5 329.1L555.0 332.1L554.7 334.0L555.2 335.1L557.1 334.8L559.8 332.4L560.5 330.9L561.8 330.2L564.2 331.4L566.3 331.6L568.1 330.9L568.9 328.3L570.4 328.1L572.2 324.8L574.8 322.4L578.7 320.0L581.0 320.6L581.9 320.2L583.3 320.6L584.9 327.3L584.2 330.9L584.3 332.0L583.0 331.4L582.3 331.6L581.2 333.8L581.1 334.9L582.6 336.6L584.1 336.3L584.8 334.8L586.8 334.9L585.4 339.8L584.6 341.3L582.2 343.3L578.4 348.9L573.2 354.1L571.2 355.5L568.4 356.8L567.0 356.9L566.6 357.8L565.1 357.3L563.8 357.9L561.0 357.3L559.4 357.7L558.4 357.6L555.6 358.8L553.4 359.3L551.7 360.5L550.5 360.6L549.5 359.5L548.6 359.4L547.6 358.0L547.5 358.4L547.3 355.7L546.5 353.6L547.4 353.0L547.5 350.5L543.0 340.7ZM576.1 341.9L575.0 340.9L573.8 341.6L572.3 342.8L570.7 344.9L572.5 347.3L573.5 347.0L574.0 346.0L575.5 345.5L577.0 342.9L576.1 341.9Z" data-cc="ZA"><title>South Africa</title></path>
+<path d="M576.1 341.9L577.0 342.9L575.5 345.5L574.0 346.0L573.5 347.0L572.5 347.3L570.7 344.9L572.3 342.8L573.8 341.6L575.0 340.9L576.1 341.9Z" data-cc="LS"><title>Lesotho</title></path>
+<path d="M195.8 146.7L202.2 146.1L201.8 146.7L210.5 150.5L217.8 150.5L218.1 149.2L222.7 149.2L225.5 152.7L226.1 156.1L227.2 157.1L229.2 158.0L231.5 155.5L233.6 155.5L235.2 156.7L236.4 160.8L237.5 162.6L238.0 166.3L241.6 168.0L242.7 167.9L240.2 173.0L238.6 178.8L239.4 184.6L240.8 187.0L241.2 188.8L242.0 190.3L244.8 191.2L245.7 192.5L254.1 190.2L256.0 188.9L258.2 183.4L263.0 181.9L267.1 181.7L267.6 182.4L267.3 183.9L265.6 185.8L264.6 187.7L265.1 188.3L263.5 192.1L262.9 191.3L261.8 191.4L260.6 193.3L260.2 193.0L259.8 193.6L254.8 193.5L254.5 195.3L253.3 195.3L255.7 198.0L255.5 199.1L252.0 199.1L250.4 201.7L250.8 202.3L250.2 204.0L247.5 200.5L246.3 199.5L244.1 198.7L242.6 198.9L238.9 200.4L228.0 195.6L225.9 194.1L225.4 193.2L221.3 192.0L220.4 190.6L217.8 188.8L216.8 186.8L216.4 185.2L217.4 184.9L217.3 184.0L218.0 183.2L218.2 182.1L217.0 177.8L215.3 174.6L213.2 172.1L212.3 170.1L210.3 168.8L210.0 168.1L210.9 166.1L209.7 165.3L208.6 163.8L208.5 161.6L207.1 161.3L205.2 158.1L205.4 157.1L204.6 154.7L204.4 152.2L204.8 151.0L203.3 149.8L202.4 149.9L201.2 149.0L200.4 150.3L199.9 154.2L202.3 158.7L202.3 159.8L202.8 159.8L202.8 161.8L203.7 163.8L204.9 165.4L205.1 168.4L206.0 171.2L205.7 172.9L207.0 173.0L208.4 175.9L206.9 177.6L206.4 177.6L206.1 175.7L204.7 173.9L202.0 171.5L202.6 169.2L202.6 167.5L200.1 165.1L199.7 165.5L199.2 164.6L197.8 163.9L196.7 162.0L198.0 162.0L199.3 160.8L199.8 159.3L198.4 157.0L197.1 156.2L195.8 146.7Z" data-cc="MX"><title>Mexico</title></path>
+<path d="M349.2 345.9L350.9 345.6L353.8 348.1L354.8 348.0L360.1 351.8L361.9 353.9L361.0 355.4L362.0 357.3L361.2 359.3L358.5 361.0L356.5 360.4L355.2 360.7L352.6 359.4L350.8 359.5L349.0 357.7L348.8 355.6L349.3 354.9L348.7 351.8L349.2 345.9Z" data-cc="UY"><title>Uruguay</title></path>
+<path d="M362.0 357.3L361.0 355.4L361.9 353.9L360.1 351.8L354.8 348.0L353.8 348.1L350.9 345.6L349.2 345.9L354.7 338.5L358.3 335.4L358.0 332.9L356.5 331.1L355.2 331.7L355.7 327.9L355.5 326.2L354.5 325.6L353.6 326.1L352.5 326.0L351.5 321.8L350.9 320.9L349.1 320.0L348.0 320.7L345.1 320.0L344.9 315.7L343.9 314.0L344.7 313.3L344.3 311.5L344.9 310.1L345.1 307.6L344.3 305.6L342.8 304.7L342.4 303.5L342.7 301.6L337.5 301.5L336.1 297.8L336.9 297.8L336.0 293.6L334.3 292.7L332.6 292.7L331.4 291.8L329.6 291.2L328.4 290.0L325.3 289.5L322.2 286.6L322.1 280.9L318.5 281.4L314.9 283.9L314.3 284.9L310.9 284.7L309.4 285.2L308.1 284.9L308.0 280.0L305.9 281.9L303.5 281.8L302.3 280.1L300.5 280.0L301.0 278.6L299.4 276.7L298.1 273.8L298.8 273.2L298.8 271.9L300.4 271.0L300.1 269.3L300.7 268.2L300.9 266.7L303.9 264.5L306.2 263.9L306.5 263.5L309.0 263.6L310.1 253.6L309.7 251.7L308.5 250.6L308.5 248.3L310.0 247.8L310.6 248.1L310.7 246.9L309.1 246.6L309.0 244.6L314.4 244.6L315.3 243.6L316.0 244.6L316.6 246.4L317.1 246.0L318.6 247.7L320.7 247.5L321.2 246.5L324.4 245.3L324.7 243.9L326.7 243.0L326.6 242.4L324.2 242.1L323.9 240.1L324.0 238.0L322.8 237.2L323.4 236.9L327.5 238.1L328.3 237.3L333.4 235.6L334.4 234.4L334.1 233.5L335.5 233.4L336.1 234.1L335.7 235.5L336.7 236.0L337.3 237.5L336.5 238.6L336.0 241.3L336.9 244.3L338.5 245.8L339.9 246.0L340.2 245.4L342.3 244.7L343.2 243.8L346.9 244.2L346.9 242.1L348.0 242.3L349.3 242.0L352.1 243.3L352.9 242.5L353.5 242.6L353.9 243.5L355.2 243.3L356.3 242.1L358.8 236.8L359.7 236.7L361.9 244.0L363.3 244.5L363.4 246.7L361.3 249.3L362.2 250.2L367.0 250.7L367.1 253.9L369.2 251.8L377.2 254.9L378.5 256.8L378.1 258.5L381.3 257.5L386.6 259.2L390.7 259.1L394.8 261.7L398.3 265.3L400.4 266.2L402.7 266.3L403.8 267.3L405.2 273.2L404.3 278.5L399.2 285.0L397.6 288.5L395.7 291.3L395.0 291.4L394.4 293.7L394.9 299.6L394.2 306.6L393.4 307.9L393.2 312.1L390.7 316.3L390.5 319.6L388.5 320.9L388.0 322.8L385.1 322.8L381.0 324.1L379.2 325.5L376.3 326.4L373.5 328.9L371.5 332.1L371.4 334.5L372.0 336.2L371.5 341.0L369.9 342.8L367.7 348.4L364.1 352.4L363.4 355.4L362.0 357.3Z" data-cc="BR"><title>Brazil</title></path>
+<path d="M310.9 284.7L314.3 284.9L314.9 283.9L318.5 281.4L322.1 280.9L322.2 286.6L325.3 289.5L328.4 290.0L329.6 291.2L331.4 291.8L332.6 292.7L334.3 292.7L336.0 293.6L336.9 297.8L336.1 297.8L337.5 301.5L342.7 301.6L342.4 303.5L342.8 304.7L344.3 305.6L345.1 307.6L344.9 310.1L344.3 311.5L344.7 313.3L343.9 314.0L343.8 313.0L341.1 311.4L338.6 311.3L334.0 312.2L333.0 315.0L333.1 316.7L332.5 320.6L332.0 319.9L328.9 319.7L328.2 322.3L326.4 320.0L322.8 319.2L320.9 322.1L319.0 322.5L317.4 318.2L315.6 314.6L316.1 311.5L314.5 310.2L313.9 307.9L312.4 305.7L313.8 302.3L312.4 299.6L312.9 298.5L312.3 297.4L313.2 295.8L313.0 290.8L313.5 289.8L310.9 284.7Z" data-cc="BO"><title>Bolivia</title></path>
+<path d="M309.0 263.6L306.5 263.5L306.2 263.9L303.9 264.5L300.9 266.7L300.7 268.2L300.1 269.3L300.4 271.0L298.8 271.9L298.8 273.2L298.1 273.8L299.4 276.7L301.0 278.6L300.5 280.0L302.3 280.1L303.5 281.8L305.9 281.9L308.0 280.0L308.1 284.9L309.4 285.2L310.9 284.7L313.5 289.8L313.0 290.8L313.2 295.8L312.3 297.4L312.9 298.5L312.4 299.6L313.8 302.3L311.8 307.3L310.5 308.1L307.6 306.3L307.3 305.0L301.6 301.8L294.2 296.4L292.8 293.8L293.2 292.9L290.5 288.7L282.3 272.8L278.1 269.4L279.0 268.0L277.5 265.0L278.3 262.8L280.5 260.8L280.8 262.1L280.1 262.8L280.2 264.0L281.3 263.8L282.4 264.1L283.6 265.7L285.1 264.4L285.6 262.3L287.2 259.5L290.4 258.3L293.4 254.9L294.2 252.9L293.8 250.5L294.6 250.2L296.4 251.7L297.3 253.2L298.5 254.0L300.2 257.3L302.2 257.7L303.7 256.9L304.7 257.4L306.3 257.1L308.5 258.6L306.8 261.8L307.6 261.9L309.0 263.6Z" data-cc="PE"><title>Peru</title></path>
+<path d="M317.1 246.0L316.6 246.4L316.0 244.6L315.3 243.6L314.4 244.6L309.0 244.6L309.1 246.6L310.7 246.9L310.6 248.1L310.0 247.8L308.5 248.3L308.5 250.6L309.7 251.7L310.1 253.6L309.0 263.6L307.6 261.9L306.8 261.8L308.5 258.6L306.3 257.1L304.7 257.4L303.7 256.9L302.2 257.7L300.2 257.3L298.5 254.0L297.3 253.2L296.4 251.7L294.6 250.2L293.8 250.5L291.3 248.7L290.5 249.2L288.2 248.7L287.6 247.4L287.0 247.4L284.3 245.6L284.0 244.6L285.0 244.4L284.9 242.8L285.5 241.7L286.9 241.5L289.2 237.8L288.2 237.1L288.7 235.2L288.2 232.3L288.8 231.5L288.5 228.8L287.5 227.1L287.9 225.6L288.8 225.8L289.3 224.9L288.8 223.0L289.1 222.6L290.5 222.7L292.7 220.4L293.9 220.1L294.6 216.4L296.3 214.9L298.0 214.9L298.2 214.2L300.4 214.5L303.7 212.1L305.1 210.6L306.1 210.8L306.7 211.6L306.1 212.7L304.4 213.2L303.6 214.8L301.6 216.9L300.3 221.0L301.7 221.2L301.9 222.7L302.5 223.4L302.3 226.5L303.0 226.8L303.6 227.9L307.1 227.6L308.7 228.0L310.5 230.7L315.2 230.2L316.1 230.7L314.9 233.5L314.7 235.7L316.0 239.5L314.6 241.1L316.3 242.9L317.1 246.0Z" data-cc="CO"><title>Colombia</title></path>
+<path d="M289.1 222.6L288.8 223.0L289.3 224.9L288.8 225.8L287.9 225.6L287.5 227.1L286.6 226.2L286.1 224.5L286.8 223.7L286.1 223.5L285.7 222.4L284.4 221.5L283.2 221.7L282.6 222.8L280.8 223.7L280.5 224.4L281.7 226.1L280.6 227.0L279.3 227.1L278.9 225.3L278.5 225.8L277.6 225.6L277.1 224.3L274.2 223.8L274.1 224.4L273.8 224.0L274.1 222.1L274.6 221.7L274.0 221.3L274.1 220.0L275.2 219.7L276.1 220.9L276.0 221.5L277.3 221.4L278.0 222.2L279.4 222.0L282.3 220.5L283.3 219.6L284.8 219.8L284.6 220.1L286.2 220.2L287.3 220.7L289.1 222.6Z" data-cc="PA"><title>Panama</title></path>
+<path d="M275.2 219.7L274.1 220.0L274.0 221.3L274.6 221.7L274.1 222.1L273.8 224.0L272.3 223.3L271.8 222.6L272.1 221.3L269.4 219.6L269.3 218.6L268.7 218.1L268.8 219.0L268.2 219.7L267.6 218.9L266.8 218.6L266.4 217.9L266.9 216.0L266.2 215.5L267.3 214.5L269.0 215.3L269.7 214.9L270.5 215.2L271.0 215.8L271.7 216.0L272.4 215.4L273.0 217.1L275.2 219.7Z" data-cc="CR"><title>Costa Rica</title></path>
+<path d="M272.4 215.4L271.7 216.0L269.7 214.9L269.0 215.3L267.3 214.5L266.9 214.9L262.0 209.1L262.4 208.6L262.8 209.1L263.9 208.8L264.3 208.0L264.7 208.0L264.8 206.4L266.0 206.4L266.7 205.5L267.4 206.2L269.3 204.5L270.1 203.2L271.3 203.7L274.0 202.4L274.9 202.5L274.5 203.5L274.6 204.7L273.5 207.0L273.3 210.7L272.9 211.0L272.6 213.2L272.0 214.0L272.4 215.4Z" data-cc="NI"><title>Nicaragua</title></path>
+<path d="M274.9 202.5L274.0 202.4L271.3 203.7L270.1 203.2L269.3 204.5L267.4 206.2L266.7 205.5L266.0 206.4L264.8 206.4L264.7 208.0L264.3 208.0L263.9 208.8L263.0 208.9L262.6 207.9L261.8 207.6L262.2 206.3L261.8 206.0L261.3 205.8L260.1 206.2L258.7 204.6L257.9 204.3L258.6 203.5L258.7 202.3L262.4 199.7L265.0 200.1L266.3 200.0L267.6 199.3L269.0 199.7L270.3 199.3L271.9 199.8L274.9 202.5Z" data-cc="HN"><title>Honduras</title></path>
+<path d="M257.9 204.3L258.7 204.6L260.1 206.2L261.3 205.8L262.2 206.3L261.5 208.4L259.0 208.0L257.9 207.4L256.4 207.2L255.7 206.5L257.4 204.9L257.3 204.5L257.9 204.3Z" data-cc="SV"><title>El Salvador</title></path>
+<path d="M250.2 204.0L250.8 202.3L250.4 201.7L252.0 199.1L255.5 199.1L255.7 198.0L253.3 195.3L254.5 195.3L254.8 193.5L259.8 193.6L258.8 199.7L259.6 199.7L260.4 200.2L260.7 199.8L261.4 200.2L258.7 202.3L258.6 203.5L257.9 204.3L257.3 204.5L257.4 204.9L255.7 206.5L254.4 205.9L252.7 205.9L250.2 204.0Z" data-cc="GT"><title>Guatemala</title></path>
+<path d="M259.8 193.6L260.2 193.0L260.6 193.3L261.8 191.4L262.3 191.4L262.3 191.8L262.8 191.9L261.4 197.6L259.6 199.7L258.8 199.7L259.4 196.1L259.8 193.6Z" data-cc="BZ"><title>Belize</title></path>
+<path d="M334.1 233.5L334.4 234.4L333.4 235.6L328.3 237.3L327.5 238.1L323.4 236.9L322.8 237.2L324.0 238.0L323.9 240.1L324.2 242.1L326.6 242.4L326.7 243.0L324.7 243.9L324.4 245.3L321.2 246.5L320.7 247.5L318.6 247.7L317.1 246.0L316.3 242.9L314.6 241.1L316.0 239.5L314.7 235.7L314.9 233.5L316.1 230.7L315.2 230.2L310.5 230.7L308.7 228.0L307.1 227.6L303.6 227.9L303.0 226.8L302.3 226.5L302.5 223.4L301.9 222.7L301.7 221.2L300.3 221.0L301.6 216.9L303.6 214.8L304.4 213.2L306.1 212.7L306.0 213.5L304.4 213.8L305.2 215.3L305.0 216.9L303.7 218.8L304.6 221.3L305.8 221.1L306.6 218.8L305.8 217.7L305.8 215.3L309.2 214.0L309.0 212.5L310.0 211.5L310.8 213.7L312.7 213.8L314.4 215.5L314.4 216.6L319.8 216.3L321.3 217.7L323.3 218.1L324.9 217.1L325.0 216.3L331.6 216.1L329.3 217.0L330.1 218.5L332.3 218.7L334.3 220.3L334.6 222.8L336.0 222.8L337.1 223.5L334.8 225.4L334.6 226.5L335.4 227.7L333.1 228.8L333.1 230.3L332.3 231.1L334.1 233.5Z" data-cc="VE"><title>Venezuela</title></path>
+<path d="M345.4 244.0L343.2 243.8L342.3 244.7L340.2 245.4L339.9 246.0L338.5 245.8L336.9 244.3L336.0 241.3L336.5 238.6L337.3 237.5L336.7 236.0L335.7 235.5L336.1 234.1L335.5 233.4L334.1 233.5L332.3 231.1L333.1 230.3L333.1 228.8L335.4 227.7L334.6 226.5L334.8 225.4L337.1 223.5L338.8 224.7L340.4 226.7L340.4 228.4L341.5 228.4L343.9 231.1L343.4 233.9L341.8 234.8L341.9 235.5L341.3 237.1L342.5 239.4L343.4 239.5L343.7 241.2L345.4 244.0Z" data-cc="GY"><title>Guyana</title></path>
+<path d="M350.9 242.7L349.3 242.0L348.0 242.3L346.9 242.1L346.9 244.2L345.4 244.0L343.7 241.2L343.4 239.5L342.5 239.4L341.3 237.1L341.9 235.5L341.8 234.8L343.4 233.9L343.9 231.1L347.2 231.7L347.5 231.2L349.7 230.9L352.6 231.8L351.1 234.5L351.3 236.7L352.4 238.5L350.9 242.7Z" data-cc="SR"><title>Suriname</title></path>
+<path d="M358.8 236.8L356.3 242.1L355.2 243.3L353.9 243.5L353.5 242.6L352.9 242.5L352.1 243.3L350.9 242.7L352.4 238.5L351.3 236.7L351.1 234.5L352.6 231.8L355.5 232.9L358.4 235.6L358.8 236.8ZM514.9 93.4L516.0 94.2L519.5 94.8L518.4 96.9L518.1 99.1L517.5 99.6L516.4 99.3L516.5 100.1L514.7 101.9L514.7 103.3L515.9 102.8L516.8 104.2L516.7 105.0L517.5 106.2L516.6 107.2L517.3 109.6L518.7 110.0L518.4 111.3L516.2 113.1L511.3 112.3L507.7 113.3L507.4 115.2L504.6 115.6L501.7 114.2L500.8 114.8L496.3 113.4L495.3 112.2L496.6 110.3L497.1 104.1L494.6 100.8L492.8 99.3L489.1 98.1L488.9 95.8L492.0 95.2L496.1 95.9L495.4 92.5L497.6 93.8L503.2 91.4L503.9 88.9L506.0 88.3L506.3 89.3L507.5 89.4L510.3 92.1L511.5 91.8L514.2 93.5L514.9 93.4ZM521.8 114.7L523.4 113.5L523.9 116.2L523.1 118.6L522.0 118.0L521.3 115.9L521.8 114.7Z" data-cc="FR"><title>France</title></path>
+<path d="M293.8 250.5L294.2 252.9L293.4 254.9L290.4 258.3L287.2 259.5L285.6 262.3L285.1 264.4L283.6 265.7L282.4 264.1L281.3 263.8L280.2 264.0L280.1 262.8L280.8 262.1L280.5 260.8L281.9 258.4L281.3 257.0L280.2 258.5L278.6 257.1L279.1 256.2L278.6 253.3L279.6 252.9L281.1 248.9L280.9 247.6L284.3 245.6L287.0 247.4L287.6 247.4L288.2 248.7L290.5 249.2L291.3 248.7L293.8 250.5Z" data-cc="EC"><title>Ecuador</title></path>
+<path d="M321.6 191.3L322.9 191.6L323.4 192.2L322.6 193.0L319.0 193.1L319.0 191.8L319.4 191.3L321.6 191.3Z" data-cc="PR"><title>Puerto Rico</title></path>
+<path d="M291.2 191.4L293.0 191.7L294.3 192.5L294.7 193.3L292.8 193.4L291.9 193.9L290.4 193.4L289.0 192.2L289.4 191.5L291.2 191.4Z" data-cc="JM"><title>Jamaica</title></path>
+<path d="M280.6 176.5L285.0 176.7L287.3 177.8L288.2 179.0L290.8 178.6L295.1 182.8L296.0 182.7L297.5 183.4L297.2 184.3L299.1 184.4L301.0 185.7L300.6 186.4L298.8 186.8L291.2 187.1L293.3 185.3L292.3 184.5L290.6 184.2L289.8 183.3L289.4 181.5L287.8 181.6L285.5 180.8L284.8 180.1L281.4 179.6L280.5 179.0L281.6 178.2L279.0 178.1L276.9 179.7L275.8 179.7L275.3 180.5L273.9 180.9L272.8 180.6L274.3 179.6L275.1 178.4L276.4 177.7L280.6 176.5Z" data-cc="CU"><title>Cuba</title></path>
+<path d="M583.3 320.6L581.9 320.2L581.0 320.6L578.7 320.0L577.0 318.6L575.0 318.1L574.3 316.1L574.3 315.0L573.2 314.6L570.3 311.1L568.1 306.2L572.9 306.8L576.9 302.2L577.9 301.9L578.2 300.8L579.8 299.6L581.9 299.1L582.0 300.3L584.3 300.2L585.5 300.9L586.0 301.7L587.3 301.9L588.7 303.0L587.6 314.4L587.2 314.7L586.4 316.9L583.3 320.6Z" data-cc="ZW"><title>Zimbabwe</title></path>
+<path d="M578.7 320.0L574.8 322.4L572.2 324.8L570.4 328.1L568.9 328.3L568.1 330.9L566.3 331.6L564.2 331.4L561.8 330.2L560.5 330.9L559.8 332.4L557.1 334.8L555.2 335.1L554.7 334.0L555.0 332.1L553.5 329.1L552.9 328.6L553.2 319.3L555.8 319.2L556.3 307.8L558.3 307.7L562.5 306.6L563.5 307.9L565.3 306.7L567.6 306.0L568.1 306.2L570.3 311.1L573.2 314.6L574.3 315.0L574.3 316.1L575.0 318.1L577.0 318.6L578.7 320.0Z" data-cc="BW"><title>Botswana</title></path>
+<path d="M552.9 328.6L552.3 340.3L549.9 342.0L548.5 342.2L545.7 341.4L545.3 340.0L544.3 339.1L543.0 340.7L541.1 338.3L540.2 336.0L538.4 325.7L538.1 320.1L535.8 316.2L533.9 310.4L531.8 307.3L531.6 304.8L534.6 303.7L536.3 303.8L537.9 305.2L549.3 304.8L551.1 306.4L557.6 306.8L564.8 304.8L566.6 305.0L567.6 305.7L566.1 306.7L565.3 306.7L563.5 307.9L562.5 306.6L558.3 307.7L556.3 307.8L555.8 319.2L553.2 319.3L552.9 328.6Z" data-cc="NA"><title>Namibia</title></path>
+<path d="M454.7 206.9L453.6 204.5L452.3 203.3L453.5 202.7L455.5 198.9L456.5 197.9L457.8 198.1L459.1 197.4L460.6 197.4L463.7 199.2L467.0 203.7L467.6 207.5L468.7 208.4L468.7 210.6L466.9 210.5L466.1 211.0L464.1 210.2L457.8 210.0L454.7 210.8L454.3 208.4L456.8 208.4L458.9 207.2L460.1 207.9L461.3 207.9L462.4 207.2L461.9 206.3L461.0 206.8L460.2 206.8L459.1 206.1L458.3 206.1L457.6 206.9L454.7 206.9Z" data-cc="SN"><title>Senegal</title></path>
+<path d="M468.7 210.6L468.7 208.4L467.6 207.5L467.0 203.7L468.0 203.1L468.4 201.3L469.3 201.2L471.2 202.1L472.7 201.4L473.8 201.6L474.2 200.9L485.0 200.9L485.6 198.7L485.2 198.3L482.9 170.8L486.9 170.8L504.9 184.7L505.5 186.2L508.5 187.6L508.5 189.6L511.5 189.3L511.5 196.6L510.1 198.7L509.8 200.7L503.7 201.5L502.7 202.6L499.3 202.7L498.6 202.1L497.1 202.6L494.6 203.9L494.1 204.9L492.0 206.3L491.6 207.1L490.4 207.8L489.1 207.3L488.4 208.1L488.0 210.3L485.8 212.9L485.9 214.0L485.1 215.3L485.3 217.2L483.5 218.0L483.1 216.7L481.9 217.0L481.4 217.9L479.2 217.9L478.5 217.4L478.1 217.7L477.3 216.8L477.5 215.8L477.1 215.5L476.5 215.8L477.2 213.9L475.2 211.0L474.7 210.9L472.4 212.5L471.2 212.2L470.0 211.3L468.9 211.8L468.7 210.6Z" data-cc="ML"><title>Mali</title></path>
+<path d="M454.3 183.4L454.9 182.4L465.4 182.4L465.0 177.8L465.7 176.2L468.2 175.9L468.3 167.7L477.0 167.9L477.1 163.1L486.9 170.8L482.9 170.8L485.2 198.3L485.6 198.7L485.0 200.9L474.2 200.9L473.8 201.6L472.7 201.4L471.2 202.1L469.3 201.2L468.4 201.3L468.0 203.1L467.0 203.7L463.7 199.2L460.6 197.4L459.1 197.4L457.8 198.1L456.5 197.9L455.5 198.9L455.3 197.2L456.1 195.6L456.5 192.6L456.0 187.9L456.3 186.3L455.7 184.8L454.3 183.4Z" data-cc="MR"><title>Mauritania</title></path>
+<path d="M507.3 230.2L505.1 230.6L504.4 228.4L504.5 221.1L504.0 220.5L503.9 218.9L502.1 216.9L502.4 215.2L503.4 214.8L503.9 213.4L505.3 213.1L506.8 211.3L507.7 211.3L509.8 213.1L509.7 214.1L510.3 216.0L509.8 217.3L510.1 218.1L507.9 221.1L507.4 223.1L507.3 230.2Z" data-cc="BJ"><title>Benin</title></path>
+<path d="M539.6 177.5L540.4 182.4L541.4 183.3L541.5 184.3L542.7 185.4L542.1 186.7L541.2 193.2L541.2 197.3L537.8 200.3L536.7 204.5L537.8 205.7L537.9 207.7L539.6 207.8L539.3 209.3L538.6 209.5L538.5 210.5L538.0 210.5L536.1 207.1L535.5 206.9L533.4 208.7L531.3 207.8L529.8 207.6L529.0 208.0L527.4 208.0L525.9 209.3L524.5 209.4L521.2 207.7L519.9 208.5L518.5 208.5L517.5 207.3L514.8 206.1L511.8 206.5L511.1 207.1L510.8 209.0L510.0 210.3L509.8 213.1L507.7 211.3L506.8 211.3L505.9 212.2L505.9 210.0L502.8 209.3L502.7 207.8L501.2 205.7L500.8 204.3L501.0 202.7L502.7 202.6L503.7 201.5L509.8 200.7L510.1 198.7L511.5 196.6L511.5 189.3L515.3 187.9L522.9 181.6L532.0 175.6L536.2 176.9L537.8 178.7L539.6 177.5Z" data-cc="NE"><title>Niger</title></path>
+<path d="M507.3 230.2L507.4 223.1L507.9 221.1L510.1 218.1L509.8 217.3L510.3 216.0L509.7 214.1L510.0 210.3L510.8 209.0L511.1 207.1L511.8 206.5L514.8 206.1L517.5 207.3L518.5 208.5L519.9 208.5L521.2 207.7L524.5 209.4L525.9 209.3L527.4 208.0L529.0 208.0L529.8 207.6L531.3 207.8L533.4 208.7L535.5 206.9L536.1 207.1L538.0 210.5L538.5 210.5L539.6 211.7L539.2 213.4L536.9 215.8L534.8 222.4L533.3 223.7L532.1 227.9L530.2 229.0L528.6 227.7L527.6 227.7L526.0 229.6L525.2 229.6L523.2 234.9L520.4 236.0L519.4 235.9L518.3 236.6L516.1 236.5L514.7 234.5L513.7 232.2L511.8 230.2L507.3 230.2Z" data-cc="NG"><title>Nigeria</title></path>
+<path d="M539.3 209.3L540.5 211.3L540.6 215.5L542.1 218.4L539.8 218.6L538.6 218.3L538.0 219.8L539.6 221.6L540.8 222.2L542.1 225.7L540.3 229.7L539.7 230.3L539.6 235.0L540.9 236.7L541.1 237.8L542.1 239.4L543.4 240.5L543.8 242.8L543.6 244.5L539.2 243.0L526.4 242.8L526.8 240.3L525.7 238.2L524.5 237.6L523.9 236.2L523.2 235.8L523.9 232.7L525.2 229.6L526.0 229.6L527.6 227.7L528.6 227.7L530.2 229.0L532.1 227.9L533.3 223.7L534.8 222.4L536.9 215.8L539.2 213.4L539.6 211.7L538.5 210.5L538.6 209.5L539.3 209.3Z" data-cc="CM"><title>Cameroon</title></path>
+<path d="M502.4 215.2L502.1 216.9L503.9 218.9L504.0 220.5L504.5 221.1L504.4 228.4L505.1 230.6L502.9 231.2L501.6 228.1L501.3 226.5L501.9 223.7L501.3 222.5L501.0 217.7L499.9 216.1L500.1 215.1L502.4 215.2Z" data-cc="TG"><title>Togo</title></path>
+<path d="M500.1 215.1L499.9 216.1L501.0 217.7L501.3 222.5L501.9 223.7L501.3 226.5L501.6 228.1L502.9 231.2L494.6 235.1L492.2 234.2L492.3 232.9L491.1 230.2L491.9 226.6L493.0 224.0L491.9 217.1L492.0 215.3L497.9 215.4L498.8 214.9L500.1 215.1Z" data-cc="GH"><title>Ghana</title></path>
+<path d="M478.1 217.7L478.5 217.4L479.2 217.9L481.4 217.9L481.9 217.0L483.1 216.7L483.5 218.0L485.3 217.2L486.5 217.9L487.0 218.9L488.2 219.6L489.2 218.8L490.4 218.7L492.3 219.5L493.0 224.0L491.9 226.6L491.1 230.2L492.3 232.9L492.2 234.2L487.3 233.6L484.1 234.2L479.5 236.3L478.9 236.2L479.3 231.9L478.2 230.6L477.3 230.4L476.5 229.5L477.1 228.1L476.8 226.6L477.0 225.7L477.4 225.7L477.4 223.7L478.6 222.9L477.4 219.0L477.6 217.9L478.1 217.7Z" data-cc="CI"><title>Ivory Coast</title></path>
+<path d="M462.8 210.1L464.1 210.2L466.1 211.0L466.9 210.5L468.7 210.6L468.9 211.8L470.0 211.3L471.2 212.2L472.4 212.5L474.7 210.9L475.2 211.0L477.2 213.9L476.5 215.8L477.1 215.5L477.5 215.8L477.3 216.8L478.1 217.7L477.6 217.9L477.4 219.0L478.6 222.9L477.4 223.7L477.4 225.7L476.2 225.6L475.6 226.9L474.9 226.9L474.3 226.2L474.5 224.9L473.4 223.0L471.4 223.6L471.1 220.7L469.7 218.2L467.6 218.2L466.9 218.8L466.2 218.9L465.4 220.4L463.9 221.8L461.7 218.7L460.3 217.7L459.6 215.6L458.8 215.0L460.1 213.5L460.9 213.6L462.7 212.6L462.4 211.6L462.8 210.1Z" data-cc="GN"><title>Guinea</title></path>
+<path d="M454.7 210.8L457.8 210.0L462.8 210.1L462.4 211.6L462.7 212.6L460.9 213.6L460.1 213.5L458.8 215.0L457.4 213.7L456.3 213.5L454.7 210.8Z" data-cc="GW"><title>Guinea-Bissau</title></path>
+<path d="M477.0 225.7L477.1 228.1L476.5 229.5L477.3 230.4L478.2 230.6L479.3 231.9L478.9 236.2L478.2 236.2L475.4 234.7L468.8 228.5L469.6 226.6L472.1 223.4L473.4 223.0L474.5 224.9L474.3 226.2L474.9 226.9L475.6 226.9L476.2 225.6L477.0 225.7Z" data-cc="LR"><title>Liberia</title></path>
+<path d="M463.9 221.8L465.4 220.4L466.2 218.9L466.9 218.8L467.6 218.2L469.7 218.2L471.1 220.7L471.4 223.6L472.1 223.4L469.6 226.6L468.8 228.5L466.1 227.0L464.7 225.3L463.9 221.8Z" data-cc="SL"><title>Sierra Leone</title></path>
+<path d="M485.3 217.2L485.1 215.3L485.9 214.0L485.8 212.9L488.0 210.3L488.4 208.1L489.1 207.3L490.4 207.8L491.6 207.1L492.0 206.3L494.1 204.9L494.6 203.9L497.1 202.6L498.6 202.1L499.3 202.7L501.0 202.7L500.8 204.3L501.2 205.7L502.7 207.8L502.8 209.3L505.9 210.0L505.9 212.2L505.3 213.1L503.9 213.4L503.4 214.8L502.4 215.2L498.8 214.9L497.9 215.4L492.0 215.3L492.3 219.5L490.4 218.7L489.2 218.8L488.2 219.6L487.0 218.9L486.5 217.9L485.3 217.2Z" data-cc="BF"><title>Burkina Faso</title></path>
+<path d="M574.8 233.4L573.9 233.8L570.1 233.4L569.1 233.6L568.7 234.4L567.8 234.5L566.7 233.8L563.7 235.4L562.4 235.1L561.2 237.2L557.2 236.3L553.2 234.1L551.7 235.1L550.7 236.7L550.4 238.9L546.8 238.2L545.2 239.9L543.8 242.8L543.4 240.5L542.1 239.4L541.1 237.8L540.9 236.7L539.6 235.0L539.5 232.7L539.7 230.3L540.3 229.7L541.7 226.5L543.9 226.3L544.4 225.5L545.6 226.2L549.0 225.0L551.6 222.7L551.3 221.6L552.0 221.3L554.7 221.5L557.2 220.0L559.1 216.5L560.5 215.3L562.2 214.7L562.5 216.1L564.1 218.1L563.9 221.7L568.5 225.2L568.5 226.3L571.6 229.3L572.3 231.2L574.3 232.4L574.8 233.4Z" data-cc="CF"><title>Central African Republic</title></path>
+<path d="M550.4 238.9L550.3 240.8L549.0 244.5L548.8 249.1L548.2 251.3L547.9 252.4L544.9 255.5L543.7 258.6L543.8 261.2L539.8 265.7L538.8 265.2L538.7 264.3L537.2 264.2L536.2 265.5L534.5 264.0L532.6 265.9L530.3 262.6L532.4 260.8L531.4 258.8L532.3 258.0L534.2 257.6L534.4 256.2L535.9 257.7L538.3 257.8L539.1 256.3L539.5 254.2L539.2 251.7L537.9 249.9L539.0 246.2L538.4 245.6L536.3 245.8L535.6 244.2L535.8 242.8L539.2 243.0L543.6 244.5L543.8 242.8L545.2 239.9L546.8 238.2L550.4 238.9Z" data-cc="CG"><title>Republic of the Congo</title></path>
+<path d="M530.8 242.8L532.1 242.6L533.8 243.1L535.4 242.7L535.8 242.8L535.6 244.2L536.3 245.8L538.4 245.6L539.0 246.2L537.9 249.9L539.2 251.7L539.5 254.2L539.1 256.3L538.3 257.8L535.9 257.7L534.4 256.2L534.2 257.6L532.3 258.0L531.4 258.8L532.4 260.8L530.3 262.6L525.7 256.8L524.1 253.5L526.0 246.8L530.9 246.7L530.8 242.8Z" data-cc="GA"><title>Gabon</title></path>
+<path d="M526.4 242.8L530.8 242.8L530.9 246.7L526.0 246.8L525.5 246.3L526.4 242.8Z" data-cc="GQ"><title>Equatorial Guinea</title></path>
+<path d="M583.8 276.4L589.3 279.2L590.5 280.6L591.1 283.3L590.0 286.8L590.5 289.4L589.6 290.5L588.6 293.4L590.0 294.3L581.7 296.9L581.9 299.1L579.8 299.6L578.2 300.8L577.9 301.9L576.9 302.2L572.9 306.8L568.1 306.2L566.6 305.0L564.8 304.8L562.6 305.5L559.2 300.9L559.5 290.8L565.2 290.9L565.0 289.8L565.4 288.6L565.0 287.1L565.3 285.6L565.0 284.6L566.0 284.7L566.1 285.7L569.1 285.9L570.0 287.3L572.2 287.8L573.8 286.8L574.4 288.4L576.5 288.9L578.5 292.0L580.6 292.0L580.5 288.6L579.7 289.1L577.1 287.3L578.1 280.4L577.5 279.0L578.3 277.0L579.1 276.6L582.7 276.1L583.8 276.4Z" data-cc="ZM"><title>Zambia</title></path>
+<path d="M589.3 279.2L591.9 279.8L593.3 282.2L594.0 286.5L593.1 288.9L593.7 293.0L594.7 293.0L595.6 294.0L596.6 296.3L596.7 300.4L595.5 301.0L594.6 303.2L592.9 301.3L592.8 299.0L593.4 297.6L593.3 296.3L592.3 295.5L591.5 295.8L588.6 293.4L589.6 290.5L590.5 289.4L590.0 286.8L591.1 283.3L590.5 280.6L589.3 279.2Z" data-cc="MW"><title>Malawi</title></path>
+<path d="M594.0 286.5L596.0 286.2L599.2 287.1L600.0 286.7L601.9 286.6L602.9 285.7L604.5 285.7L607.5 284.5L609.7 282.7L610.1 284.1L610.0 295.0L610.4 296.5L608.3 301.0L606.5 303.0L600.9 305.7L597.6 309.1L593.4 312.7L593.1 315.0L594.2 317.4L594.6 320.2L595.1 320.0L594.8 323.2L594.2 324.6L594.8 325.2L594.3 326.5L593.1 327.7L587.6 330.5L586.3 331.6L586.5 333.0L587.1 333.2L586.8 334.9L584.8 334.8L584.2 330.9L584.9 327.3L583.3 320.6L586.4 316.9L587.2 314.7L587.6 314.4L588.7 303.0L587.3 301.9L586.0 301.7L585.5 300.9L584.3 300.2L582.0 300.3L581.7 296.9L590.0 294.3L591.5 295.8L592.3 295.5L593.3 296.3L593.4 297.6L592.8 299.0L592.9 301.3L594.6 303.2L595.5 301.0L596.7 300.4L596.6 296.3L595.6 294.0L594.7 293.0L593.7 293.0L593.1 288.9L594.0 286.5Z" data-cc="MZ"><title>Mozambique</title></path>
+<path d="M584.8 334.8L584.1 336.3L582.6 336.6L581.1 334.9L581.2 333.8L582.3 331.6L583.0 331.4L584.3 332.0L584.8 334.8Z" data-cc="SZ"><title>Eswatini</title></path>
+<path d="M535.5 265.1L534.5 265.8L534.0 268.0L533.3 268.3L532.6 265.9L534.5 264.0L535.5 265.1ZM533.6 269.3L536.5 268.6L544.6 268.6L546.0 272.9L547.7 275.5L550.4 274.8L551.9 275.3L553.0 272.6L554.7 272.5L554.8 272.0L556.2 272.0L556.0 273.1L559.3 273.1L559.3 275.1L559.8 276.3L559.4 278.2L559.6 280.1L560.5 281.3L560.3 285.1L563.8 284.4L565.0 284.6L565.3 285.6L565.0 287.1L565.4 288.6L565.0 289.8L565.2 290.9L559.5 290.8L559.2 300.9L562.6 305.5L557.6 306.8L551.1 306.4L549.3 304.8L537.9 305.2L536.3 303.8L534.6 303.7L531.6 304.8L531.4 302.8L533.0 295.8L534.6 291.6L537.0 288.1L537.4 285.8L537.2 284.0L536.4 282.8L535.1 279.0L536.1 277.1L534.7 271.9L533.4 269.9L533.6 269.3Z" data-cc="AO"><title>Angola</title></path>
+<path d="M583.3 257.6L584.1 260.6L581.3 264.1L580.2 264.2L580.0 260.4L579.4 259.0L581.0 259.2L581.9 257.4L583.3 257.6Z" data-cc="BI"><title>Burundi</title></path>
+<path d="M592.7 146.1L592.4 147.1L591.4 146.7L591.0 148.8L591.7 149.2L591.1 149.6L591.1 150.4L592.3 150.0L592.4 151.2L591.6 156.3L589.4 150.9L590.0 149.8L591.0 144.9L591.9 144.9L592.1 144.4L592.8 144.3L592.7 146.1Z" data-cc="IL"><title>Israel</title></path>
+<path d="M592.8 144.3L592.1 144.4L591.9 144.9L591.1 144.9L591.7 142.3L592.8 140.0L594.0 140.1L594.5 141.4L593.3 142.6L592.8 144.3Z" data-cc="LB"><title>Lebanon</title></path>
+<path d="M634.5 289.5L635.8 292.9L636.0 296.7L636.6 298.2L636.2 299.8L635.7 300.7L634.9 298.8L634.3 299.8L634.7 302.1L634.3 303.5L633.6 304.2L633.2 306.9L625.1 329.1L620.4 331.2L616.9 329.3L616.3 327.6L616.4 324.8L615.7 322.2L615.6 319.9L616.3 317.6L617.5 317.1L617.6 316.0L619.1 313.6L619.5 311.6L618.6 308.1L618.6 305.2L619.6 303.4L620.1 301.4L621.4 301.3L624.0 300.0L625.2 300.0L629.2 296.2L630.1 294.6L629.8 293.3L630.9 293.7L632.5 291.5L632.7 289.5L633.7 288.1L634.5 289.5Z" data-cc="MG"><title>Madagascar</title></path>
+<path d="M592.3 150.0L591.1 150.4L591.1 149.6L591.7 149.2L591.0 148.8L591.4 146.7L592.4 147.1L592.6 149.1L592.3 150.0Z" data-cc="PS"><title>Palestine</title></path>
+<path d="M454.7 206.9L457.6 206.9L458.3 206.1L459.1 206.1L460.2 206.8L461.0 206.8L461.9 206.3L462.4 207.2L461.3 207.9L460.1 207.9L458.9 207.2L456.8 208.4L454.3 208.4L454.7 206.9Z" data-cc="GM"><title>The Gambia</title></path>
+<path d="M524.8 153.8L523.6 148.1L521.9 146.8L521.9 146.0L519.7 144.1L519.4 141.7L521.0 139.9L521.5 137.3L521.0 134.3L521.5 132.6L524.3 131.4L526.1 131.7L526.0 133.3L528.2 132.2L528.4 132.8L527.1 134.3L527.2 135.8L528.1 136.6L527.8 139.4L526.2 141.0L526.7 142.7L528.1 142.7L528.8 144.3L529.8 144.8L529.7 147.2L525.9 150.4L526.3 151.7L526.1 153.0L524.8 153.8Z" data-cc="TN"><title>Tunisia</title></path>
+<path d="M477.1 163.1L477.2 158.4L481.5 156.1L486.3 154.8L487.3 153.2L490.4 151.9L490.5 149.5L492.0 149.3L493.2 148.1L496.6 147.5L497.1 146.3L496.4 145.6L495.4 140.3L494.4 138.3L496.9 136.6L499.7 136.0L501.3 134.7L503.8 133.7L512.3 132.9L513.6 133.4L516.0 132.1L518.7 132.1L519.8 132.8L521.5 132.6L521.0 134.3L521.5 137.3L521.0 139.9L519.4 141.7L519.7 144.1L521.9 146.0L521.9 146.8L523.6 148.1L525.7 156.6L525.4 163.9L525.7 165.9L524.7 167.2L526.3 169.5L526.4 170.9L527.4 172.7L528.6 172.1L530.8 173.6L532.0 175.6L522.9 181.6L515.3 187.9L511.5 189.3L508.5 189.6L508.5 187.6L505.5 186.2L504.9 184.7L477.1 163.1Z" data-cc="DZ"><title>Algeria</title></path>
+<path d="M592.4 147.1L592.7 146.1L595.7 147.4L600.5 144.0L601.9 147.9L601.5 148.3L596.4 149.9L599.3 153.1L598.5 153.7L598.2 154.7L596.2 155.2L595.7 156.3L594.7 157.3L591.7 156.8L591.6 156.3L592.4 151.2L592.4 147.1Z" data-cc="JO"><title>Jordan</title></path>
+<path d="M637.2 173.1L637.6 172.9L637.8 173.8L639.9 173.3L643.7 173.5L648.5 167.3L649.1 168.4L649.8 170.9L648.4 170.9L648.4 173.0L648.9 173.5L647.8 174.1L647.9 175.4L646.9 178.7L638.7 177.1L637.2 173.1Z" data-cc="AE"><title>United Arab Emirates</title></path>
+<path d="M635.0 171.5L634.6 169.2L635.1 167.5L635.8 167.1L636.7 168.1L636.9 170.0L636.6 171.9L635.8 172.1L635.0 171.5Z" data-cc="QA"><title>Qatar</title></path>
+<path d="M625.6 154.8L627.3 159.4L625.5 159.5L624.6 157.9L622.3 157.6L623.8 154.6L625.6 154.8Z" data-cc="KW"><title>Kuwait</title></path>
+<path d="M601.9 147.9L600.5 144.0L605.8 140.7L606.3 136.8L605.8 134.5L607.1 133.7L608.1 131.7L609.1 131.2L612.2 131.7L613.2 132.5L614.3 131.9L616.5 135.7L618.3 136.7L618.8 138.5L617.6 139.6L617.4 142.1L619.6 145.1L623.0 146.9L624.6 149.3L624.5 151.6L625.3 151.6L625.5 153.3L627.2 155.0L623.8 154.6L622.3 157.6L617.4 157.4L609.3 151.0L605.2 148.7L601.9 147.9Z" data-cc="IQ"><title>Iraq</title></path>
+<path d="M647.4 178.0L647.3 176.7L647.9 175.4L647.8 174.1L648.9 173.5L648.4 173.0L648.4 170.9L649.8 170.9L651.2 173.1L652.8 174.3L656.5 175.3L658.7 178.1L659.7 178.5L659.8 179.3L656.9 185.2L655.6 185.1L655.1 185.8L654.9 187.4L655.4 189.6L655.2 190.0L653.9 189.9L652.4 191.1L652.2 192.7L651.7 193.4L650.0 193.3L649.0 194.1L649.1 195.4L647.9 196.3L646.4 196.0L644.6 197.1L643.4 197.2L639.8 189.8L647.6 186.6L648.8 180.2L647.4 178.0ZM649.1 168.4L648.5 167.3L649.1 166.2L649.5 166.5L649.1 168.4Z" data-cc="OM"><title>Oman</title></path>
+<path d="M952.0 300.3L953.3 302.2L952.3 302.6L951.7 301.2L952.0 300.3ZM951.0 299.6L950.8 298.8L951.3 296.3L952.4 297.3L952.3 299.9L951.6 299.5L951.0 299.6Z" data-cc="VU"><title>Vanuatu</title></path>
+<path d="M778.7 211.4L777.6 207.6L779.1 204.9L782.5 204.3L785.1 204.8L787.5 206.0L788.4 203.9L791.0 205.0L791.9 207.1L792.0 210.9L787.6 213.4L789.0 215.3L786.2 215.5L783.9 216.8L781.6 216.3L778.7 211.4Z" data-cc="KH"><title>Cambodia</title></path>
+<path d="M785.1 204.8L782.5 204.3L779.1 204.9L777.6 207.6L778.7 211.4L776.1 210.0L773.8 210.0L773.9 207.5L771.5 207.5L771.7 211.0L770.0 218.5L770.3 220.8L772.1 220.9L773.4 223.7L774.1 226.5L775.7 228.3L777.4 228.7L778.9 230.3L778.1 231.6L776.3 232.0L776.0 230.4L773.7 229.0L773.2 229.5L770.0 225.0L768.6 223.5L768.2 225.3L767.6 223.6L768.3 218.6L770.6 212.3L769.3 209.5L768.7 206.2L765.7 202.1L766.6 201.5L767.2 198.7L762.1 191.5L763.2 191.0L763.9 187.5L765.8 187.4L767.1 186.0L768.5 185.3L769.8 186.3L770.3 188.2L772.1 188.3L772.0 191.7L772.5 194.5L775.0 192.6L775.9 193.2L777.5 193.1L777.9 192.0L779.9 192.2L782.4 194.8L783.0 197.9L785.6 200.7L785.8 203.4L785.1 204.8Z" data-cc="TH"><title>Thailand</title></path>
+<path d="M791.0 205.0L788.4 203.9L787.5 206.0L785.1 204.8L785.8 203.4L785.6 200.7L783.0 197.9L782.4 194.8L779.9 192.2L777.9 192.0L777.5 193.1L775.9 193.2L775.0 192.6L772.5 194.5L772.0 191.7L772.1 188.3L770.3 188.2L769.8 186.3L768.5 185.3L768.9 184.1L770.8 182.0L771.2 182.8L772.6 182.9L771.6 179.2L772.9 178.8L776.6 184.2L779.9 184.2L781.4 187.0L779.9 187.8L779.3 188.9L782.8 190.8L787.7 197.4L790.1 199.6L791.1 201.8L791.0 205.0Z" data-cc="LA"><title>Laos</title></path>
+<path d="M768.5 185.3L767.1 186.0L765.8 187.4L763.9 187.5L763.2 191.0L762.1 191.5L767.2 198.7L766.6 201.5L765.7 202.1L768.7 206.2L769.3 209.5L770.6 212.3L768.3 218.6L767.9 216.2L768.5 213.8L767.4 211.9L767.3 208.4L766.0 206.8L763.7 199.0L762.2 196.4L757.9 200.2L754.6 199.2L755.0 195.3L754.0 192.3L751.4 188.6L751.5 187.5L749.9 187.1L747.6 184.5L747.0 181.9L748.0 182.4L747.7 180.1L748.9 179.4L748.4 178.0L748.8 176.9L748.3 173.6L750.5 174.3L751.2 171.7L751.1 170.2L752.0 167.5L751.5 165.7L754.5 163.5L756.5 164.0L755.8 162.1L756.6 161.5L756.2 160.3L757.6 160.1L759.0 161.9L760.3 162.7L761.4 167.8L759.4 170.4L759.8 174.2L762.5 173.7L763.7 176.6L765.5 177.2L765.2 179.9L768.7 181.6L770.5 180.7L770.8 182.0L768.9 184.1L768.5 185.3Z" data-cc="MM"><title>Myanmar</title></path>
+<path d="M783.9 216.8L786.2 215.5L789.0 215.3L787.6 213.4L792.0 210.9L791.9 207.1L791.0 205.0L791.1 201.8L790.1 199.6L787.7 197.4L782.8 190.8L779.3 188.9L779.9 187.8L781.4 187.0L779.9 184.2L776.6 184.2L772.9 178.8L774.1 178.0L778.8 177.6L780.7 175.9L782.3 177.1L784.8 177.7L784.8 179.5L786.3 180.8L789.1 181.7L786.1 184.4L784.3 187.4L784.1 189.6L789.9 197.1L792.6 199.1L794.6 201.6L796.6 207.5L796.8 213.1L794.8 215.1L791.8 217.2L789.8 219.8L786.7 222.8L785.5 220.7L786.1 218.6L783.9 216.8Z" data-cc="VN"><title>Vietnam</title></path>
+<path d="M826.7 116.0L826.7 116.0L826.7 116.0L826.7 116.0ZM826.1 115.4L826.7 116.0L825.6 115.8L824.8 117.9L826.0 120.2L825.0 120.9L824.3 122.4L822.9 122.9L822.1 123.7L822.5 125.5L825.8 127.4L825.8 128.1L823.0 128.5L822.6 129.9L821.5 129.8L821.4 130.1L819.9 129.5L819.9 130.1L819.2 130.3L818.9 129.8L817.2 129.0L817.3 127.6L817.8 127.2L817.3 126.6L817.2 124.9L816.8 124.4L813.7 123.2L814.8 121.2L816.8 119.5L817.5 117.2L819.2 118.2L821.4 118.3L820.2 116.7L823.4 115.3L823.5 113.6L826.1 115.4Z" data-cc="KP"><title>North Korea</title></path>
+<path d="M821.4 130.1L821.5 129.8L822.6 129.9L823.0 128.5L825.8 128.1L825.8 127.4L829.6 131.1L831.1 133.2L832.6 136.8L832.3 138.6L830.2 139.2L828.6 140.5L826.4 140.8L825.5 139.0L825.0 136.7L822.6 133.3L824.3 132.8L821.4 130.1Z" data-cc="KR"><title>South Korea</title></path>
+<path d="M711.2 93.9L713.5 93.4L717.0 90.8L720.0 89.3L722.5 90.3L725.0 90.3L727.2 91.7L733.5 92.6L734.8 90.5L733.0 88.7L734.0 85.5L737.3 86.8L742.8 87.9L744.3 90.2L748.4 91.5L753.2 90.5L755.8 90.9L758.9 92.4L761.1 94.0L766.6 94.4L768.4 93.7L771.3 93.2L773.7 91.0L775.3 91.3L777.1 92.4L779.8 92.1L779.8 97.5L781.1 98.8L782.2 98.4L784.9 98.9L786.2 97.7L788.6 98.7L791.9 100.9L792.2 102.0L790.1 101.6L786.8 102.0L785.5 102.9L784.7 105.0L781.5 106.2L779.8 107.8L775.5 106.9L775.1 108.9L777.3 111.2L776.0 112.2L774.9 113.9L772.5 115.0L768.8 115.1L765.2 116.2L763.0 117.9L761.5 116.9L758.4 116.9L754.0 115.0L751.4 114.6L748.2 115.0L742.8 114.3L740.1 114.4L738.0 112.5L735.7 109.6L734.1 109.3L730.4 107.3L723.8 106.4L722.4 105.0L721.9 101.4L719.3 98.9L715.4 97.7L712.7 96.1L711.2 93.9Z" data-cc="MN"><title>Mongolia</title></path>
+<path d="M756.2 160.3L756.6 161.5L755.8 162.1L756.5 164.0L754.5 163.5L751.5 165.7L752.0 167.5L751.1 170.2L751.2 171.7L750.5 174.3L748.3 173.6L748.8 176.9L748.4 178.0L748.9 179.4L747.7 180.1L745.4 175.1L744.7 175.1L744.6 177.1L742.9 175.5L743.4 173.6L744.5 173.5L745.3 170.8L743.6 170.2L738.6 169.8L737.9 167.6L736.6 167.5L734.3 166.1L733.7 168.2L736.0 169.9L734.5 171.1L734.1 172.3L735.9 173.1L735.8 175.0L737.1 177.4L738.0 180.1L737.8 181.2L736.0 181.2L732.8 181.8L733.3 184.2L732.1 186.1L728.5 188.3L726.0 192.0L721.8 196.1L722.0 197.5L718.4 199.5L717.1 199.6L716.6 202.1L717.9 208.8L717.0 211.8L717.4 217.2L716.0 217.4L714.9 219.8L715.8 220.8L713.3 221.7L712.5 223.9L711.5 224.8L708.7 221.8L706.0 214.2L703.2 209.7L701.6 203.7L698.8 199.3L695.8 189.1L695.3 185.3L694.4 182.3L690.8 184.2L688.8 183.8L684.9 180.0L686.0 178.8L685.1 177.6L681.6 174.9L683.1 172.7L688.9 172.7L688.0 170.0L686.3 168.4L685.6 165.9L683.6 164.5L686.0 161.2L689.1 161.4L691.3 158.1L692.3 154.8L694.3 151.6L693.8 149.4L695.6 147.5L693.2 145.9L690.4 141.0L691.3 139.6L695.4 140.4L698.2 139.9L700.0 137.3L703.7 141.0L704.0 143.6L705.4 145.2L705.7 146.8L703.7 146.4L705.2 149.9L712.3 154.2L710.9 155.6L710.5 158.6L719.8 163.2L723.5 163.6L725.3 165.2L730.8 166.2L732.9 166.2L733.0 164.9L732.3 162.9L732.2 161.5L733.6 160.9L734.6 164.0L737.2 165.2L738.8 164.7L743.2 164.8L743.0 162.9L741.7 161.9L743.7 161.5L745.6 159.1L748.2 157.1L750.5 157.8L752.1 156.5L753.8 158.5L753.2 159.8L756.2 160.3Z" data-cc="IN"><title>India</title></path>
+<path d="M747.7 180.1L748.0 182.4L747.0 181.9L747.6 184.5L745.4 179.7L744.0 177.8L741.5 177.7L742.0 179.0L741.4 180.8L740.2 180.1L739.9 180.7L738.0 180.1L737.1 177.4L735.8 175.0L735.9 173.1L734.1 172.3L734.5 171.1L736.0 169.9L733.7 168.2L734.3 166.1L736.6 167.5L737.9 167.6L738.6 169.8L743.6 170.2L745.3 170.8L744.5 173.5L743.4 173.6L742.9 175.5L744.6 177.1L744.7 175.1L745.4 175.1L747.7 180.1Z" data-cc="BD"><title>Bangladesh</title></path>
+<path d="M741.7 161.9L743.0 162.9L743.2 164.8L738.8 164.7L737.2 165.2L734.6 164.0L734.4 163.4L735.6 161.0L736.9 160.2L740.3 161.0L741.7 161.9Z" data-cc="BT"><title>Bhutan</title></path>
+<path d="M732.2 161.5L732.3 162.9L733.0 164.9L732.9 166.2L730.8 166.2L725.3 165.2L723.5 163.6L719.8 163.2L710.5 158.6L710.9 155.6L713.2 153.4L715.5 154.4L718.6 156.5L720.1 156.9L721.3 158.5L723.5 159.1L725.9 160.5L732.2 161.5Z" data-cc="NP"><title>Nepal</title></path>
+<path d="M700.0 137.3L698.2 139.9L695.4 140.4L691.3 139.6L690.4 141.0L693.2 145.9L695.6 147.5L693.8 149.4L694.3 151.6L692.3 154.8L691.3 158.1L689.1 161.4L686.0 161.2L683.6 164.5L685.6 165.9L686.3 168.4L688.0 170.0L688.9 172.7L683.1 172.7L681.6 174.9L679.5 174.0L678.4 171.8L676.0 169.3L663.2 170.4L663.8 166.7L667.3 165.1L666.9 163.6L665.6 163.1L665.1 160.3L662.4 158.9L659.5 155.3L664.1 156.9L666.7 156.4L668.3 156.9L668.7 156.2L670.6 156.4L673.8 155.1L673.4 152.4L674.6 150.6L676.5 150.6L676.6 149.7L678.5 149.3L679.6 149.6L680.4 148.7L679.9 146.8L680.6 144.9L682.1 144.1L680.7 141.9L683.2 142.0L683.6 140.9L683.3 139.7L684.3 138.3L682.7 135.4L683.9 134.0L689.4 133.0L691.9 132.0L694.2 133.5L695.5 136.0L700.0 137.3Z" data-cc="PK"><title>Pakistan</title></path>
+<path d="M669.7 131.3L671.1 131.3L674.1 132.4L675.7 131.4L676.7 132.0L677.2 130.5L678.7 130.6L679.0 128.9L679.8 127.8L681.4 128.5L681.3 129.4L682.1 129.6L682.5 132.3L683.8 133.3L685.6 132.3L686.8 130.9L691.3 131.1L691.9 132.0L689.4 133.0L683.9 134.0L682.7 135.4L684.3 138.3L683.3 139.7L683.6 140.9L683.2 142.0L680.7 141.9L682.1 144.1L680.6 144.9L679.9 146.8L680.4 148.7L679.6 149.6L678.5 149.3L676.6 149.7L676.5 150.6L674.6 150.6L673.4 152.4L673.8 155.1L670.6 156.4L668.7 156.2L668.3 156.9L666.7 156.4L664.1 156.9L659.5 155.3L661.4 152.4L660.9 150.4L658.8 149.8L657.0 145.3L657.8 143.5L656.6 143.0L657.2 136.8L660.1 138.0L661.9 137.5L662.2 136.1L664.1 135.6L665.4 134.7L665.4 132.1L667.4 131.5L667.5 130.4L669.7 131.3Z" data-cc="AF"><title>Afghanistan</title></path>
+<path d="M673.2 132.0L673.9 128.8L672.8 126.4L670.8 125.7L671.1 124.3L673.3 124.4L674.1 122.7L674.4 120.7L677.6 119.9L677.4 121.4L678.0 122.3L679.0 122.2L678.3 123.2L675.4 122.6L675.6 124.5L678.3 124.2L681.7 125.2L686.4 124.8L687.7 127.7L688.5 127.4L690.2 128.1L691.3 131.1L686.8 130.9L685.6 132.3L683.8 133.3L682.5 132.3L682.1 129.6L681.3 129.4L681.4 128.5L679.8 127.8L679.0 128.9L678.7 130.6L677.2 130.5L676.7 132.0L675.7 131.4L674.1 132.4L673.2 132.0Z" data-cc="TJ"><title>Tajikistan</title></path>
+<path d="M677.2 115.8L677.4 114.4L678.9 114.0L683.3 115.1L683.2 113.2L684.4 112.6L688.3 113.9L689.2 113.6L697.1 114.0L698.7 115.1L700.4 115.6L700.2 116.3L696.8 118.0L696.2 119.2L693.1 119.6L692.7 121.6L690.0 121.2L688.4 121.8L686.4 123.3L686.9 124.0L686.4 124.8L681.7 125.2L678.3 124.2L675.6 124.5L675.4 122.6L678.3 123.2L679.0 122.2L681.0 122.5L683.6 120.2L680.2 118.6L678.6 119.4L676.5 118.2L678.0 116.1L677.2 115.8Z" data-cc="KG"><title>Kyrgyzstan</title></path>
+<path d="M631.4 117.3L632.3 116.3L635.0 115.6L636.9 116.5L639.1 119.0L643.2 118.8L642.5 117.2L644.4 116.1L646.1 114.3L649.8 116.0L650.6 118.5L651.7 119.1L654.4 119.0L655.4 119.5L657.4 122.8L662.7 126.5L669.4 129.4L669.7 131.3L667.5 130.4L667.4 131.5L665.4 132.1L665.4 134.7L664.1 135.6L662.2 136.1L661.9 137.5L660.1 138.0L657.2 136.8L656.5 134.1L654.6 134.0L651.1 131.2L649.0 130.8L645.9 129.2L644.0 128.9L643.0 129.5L641.3 129.4L639.8 131.2L637.7 131.8L636.8 129.6L636.6 126.3L634.4 125.2L634.7 123.0L632.9 122.9L633.0 120.2L635.5 121.0L637.5 120.0L635.3 118.1L634.3 116.3L632.4 117.1L632.6 119.4L631.4 117.3Z" data-cc="TM"><title>Turkmenistan</title></path>
+<path d="M627.2 155.0L625.5 153.3L625.3 151.6L624.5 151.6L624.6 149.3L623.0 146.9L619.6 145.1L617.4 142.1L617.6 139.6L618.8 138.5L618.3 136.7L616.5 135.7L612.6 129.4L612.9 128.4L611.6 124.8L613.2 123.9L613.8 125.1L615.3 126.5L617.1 127.0L618.0 126.9L620.6 124.5L621.5 124.3L622.4 125.2L621.8 126.8L623.6 128.4L624.2 128.3L625.4 130.6L627.9 131.3L630.0 132.9L633.7 133.4L637.5 132.6L637.7 131.8L639.8 131.2L641.3 129.4L643.0 129.5L644.0 128.9L645.9 129.2L649.0 130.8L651.1 131.2L654.6 134.0L656.5 134.1L657.2 136.8L656.6 143.0L657.8 143.5L657.0 145.3L658.8 149.8L660.9 150.4L661.4 152.4L659.5 155.3L662.4 158.9L665.1 160.3L665.6 163.1L666.9 163.6L667.3 165.1L663.8 166.7L663.2 170.4L652.1 168.3L650.5 164.4L649.1 163.9L647.2 164.4L644.7 166.0L641.4 164.9L638.4 162.5L635.8 161.6L631.2 154.3L629.8 154.8L628.0 153.7L627.2 155.0Z" data-cc="IR"><title>Iran</title></path>
+<path d="M592.7 146.1L593.3 142.6L594.5 141.4L594.0 140.1L592.8 140.0L592.3 137.5L592.8 136.2L594.0 134.8L593.9 133.1L594.8 133.7L597.6 132.8L599.0 133.4L601.1 133.4L603.9 132.2L608.1 131.7L607.1 133.7L605.8 134.5L606.3 136.8L605.8 140.7L595.7 147.4L592.7 146.1Z" data-cc="SY"><title>Syria</title></path>
+<path d="M618.0 126.9L617.1 127.0L615.7 124.6L614.6 124.6L613.7 123.8L613.2 123.9L612.0 123.0L610.0 122.2L610.0 120.6L609.4 119.5L612.8 119.0L614.5 120.4L614.2 121.2L615.7 122.3L615.1 123.3L617.6 124.7L618.0 126.9Z" data-cc="AM"><title>Armenia</title></path>
+<path d="M524.9 65.3L525.8 63.6L527.5 61.6L528.0 58.3L526.5 56.8L526.1 53.0L527.3 50.4L529.4 50.5L530.1 49.4L529.2 48.4L532.2 44.5L535.2 39.5L537.2 39.5L537.5 38.0L541.5 38.5L541.6 36.7L542.9 36.6L549.4 39.7L550.1 43.9L551.0 45.0L547.5 45.8L545.6 47.7L546.2 49.4L539.1 54.1L538.0 58.1L539.7 60.1L542.1 61.7L540.3 65.0L538.1 65.7L537.7 70.6L536.6 73.4L533.8 73.1L532.6 75.4L530.0 75.6L529.1 72.8L526.9 69.4L524.9 65.3Z" data-cc="SE"><title>Sweden</title></path>
+<path d="M564.9 73.2L567.4 73.9L567.9 74.7L569.0 74.3L571.4 75.0L571.9 76.4L571.5 77.2L573.3 79.2L574.3 79.7L574.3 80.3L575.9 80.8L576.7 81.6L575.9 82.3L573.6 82.4L575.2 85.4L573.2 85.6L572.6 86.2L572.7 87.7L569.5 87.6L568.8 86.9L568.0 87.4L567.0 87.0L560.0 86.0L558.2 86.0L557.0 86.8L555.9 87.0L555.7 85.6L554.8 84.2L556.1 83.6L554.9 79.9L557.2 79.9L559.6 78.8L559.9 77.1L561.7 76.2L561.3 74.8L564.9 73.2Z" data-cc="BY"><title>Belarus</title></path>
+<path d="M575.2 85.4L576.1 85.5L576.6 84.8L579.7 84.7L581.5 86.4L581.1 87.0L581.4 87.9L583.3 88.1L584.4 89.4L584.4 90.0L587.7 91.1L589.4 90.6L591.1 92.0L592.5 92.0L596.3 93.0L596.5 93.9L595.8 95.5L596.6 97.2L596.4 98.2L594.1 98.5L593.0 99.3L593.1 100.7L591.2 101.0L589.8 102.0L587.5 102.1L585.6 103.3L585.9 105.0L585.1 104.2L582.5 103.5L582.0 104.2L577.7 103.1L577.3 101.9L575.1 102.3L574.4 104.0L572.8 106.3L571.7 105.8L570.6 106.3L569.4 105.7L570.0 105.4L570.8 103.3L570.6 102.8L571.1 102.5L571.4 103.0L573.4 102.8L572.1 101.2L571.6 100.0L570.6 99.4L570.7 98.4L569.5 97.6L566.6 96.5L563.4 97.2L562.9 98.0L560.4 98.7L559.2 98.0L556.1 97.6L555.1 98.3L554.8 97.5L553.4 96.6L554.4 94.6L554.9 94.8L554.1 93.4L556.0 90.8L557.2 90.5L557.4 89.6L555.9 87.0L557.0 86.8L558.2 86.0L560.0 86.0L567.0 87.0L568.0 87.4L568.8 86.9L569.5 87.6L572.7 87.7L572.6 86.2L573.2 85.6L575.2 85.4Z" data-cc="UA"><title>Ukraine</title></path>
+<path d="M554.9 79.9L556.1 83.6L554.8 84.2L557.4 89.6L557.2 90.5L556.0 90.8L554.1 93.4L554.9 94.8L552.0 93.4L550.3 93.8L549.1 93.5L547.7 94.2L546.4 93.1L545.5 93.5L544.1 91.8L542.3 91.6L542.0 90.7L540.3 90.3L540.0 91.1L538.7 90.5L538.8 89.6L537.0 89.4L535.8 88.4L534.6 86.5L534.8 85.4L534.0 83.8L533.1 82.7L533.7 81.9L533.1 80.4L541.0 77.1L543.3 77.6L543.6 78.3L553.0 78.7L554.3 79.0L554.9 79.9Z" data-cc="PL"><title>Poland</title></path>
+<path d="M541.1 97.5L541.1 98.8L539.7 98.8L540.2 99.5L539.1 102.0L537.0 102.1L535.8 102.8L530.2 101.7L529.6 100.7L527.2 101.2L527.0 101.8L523.1 100.7L523.3 99.4L524.1 99.2L525.3 100.1L525.6 99.3L527.8 99.4L529.5 98.8L530.7 98.9L531.4 99.6L531.2 97.0L532.0 96.6L532.8 95.2L534.7 96.2L535.9 95.0L536.8 94.7L538.7 95.7L539.8 95.5L541.0 96.1L541.1 97.5Z" data-cc="AT"><title>Austria</title></path>
+<path d="M553.4 96.6L554.8 97.5L555.1 98.3L553.7 98.9L551.4 103.2L549.5 103.7L548.0 103.6L545.3 104.9L543.2 104.3L540.5 102.6L539.9 101.5L539.5 101.5L540.2 99.5L539.7 98.8L541.1 98.8L541.1 97.5L543.4 98.7L545.4 98.3L545.5 97.7L549.0 96.9L549.5 96.2L550.3 96.0L552.9 96.9L553.4 96.6Z" data-cc="HU"><title>Hungary</title></path>
+<path d="M564.5 97.2L566.6 96.5L569.5 97.6L570.7 98.4L570.6 99.4L571.6 100.0L572.1 101.2L573.4 102.8L571.4 103.0L571.1 102.5L570.6 102.8L570.8 103.3L570.0 105.4L569.4 105.7L568.8 104.3L568.6 101.6L565.2 97.6L564.5 97.2Z" data-cc="MD"><title>Moldova</title></path>
+<path d="M569.4 105.7L570.6 106.3L571.7 105.8L572.8 106.3L573.0 107.1L571.9 107.8L571.1 107.5L570.8 111.3L569.3 111.0L567.4 109.8L564.6 110.6L563.4 111.4L559.8 111.2L557.8 110.7L556.9 110.9L555.5 109.1L556.1 108.6L555.4 108.2L554.7 108.9L553.2 108.0L552.9 106.7L551.3 106.0L551.0 105.0L549.5 103.7L551.4 103.2L553.7 98.9L556.1 97.6L559.2 98.0L560.4 98.7L562.9 98.0L563.4 97.2L564.5 97.2L565.2 97.6L568.6 101.6L568.8 104.3L569.4 105.7Z" data-cc="RO"><title>Romania</title></path>
+<path d="M561.3 74.8L561.7 76.2L559.9 77.1L559.6 78.8L557.2 79.9L554.9 79.9L554.3 79.0L553.0 78.7L552.9 77.1L549.3 76.1L548.5 73.6L551.1 72.7L555.0 72.9L557.2 72.6L557.6 73.2L558.8 73.4L561.3 74.8Z" data-cc="LT"><title>Lithuania</title></path>
+<path d="M562.3 69.3L563.5 70.0L564.9 73.2L561.3 74.8L558.8 73.4L557.6 73.2L557.2 72.6L555.0 72.9L551.1 72.7L548.5 73.6L548.4 71.4L549.3 69.5L551.3 68.5L553.4 70.7L555.2 70.7L555.4 68.4L557.2 67.9L560.4 69.3L562.3 69.3Z" data-cc="LV"><title>Latvia</title></path>
+<path d="M562.9 63.5L563.3 64.0L562.0 65.7L563.1 68.4L562.3 69.3L560.4 69.3L557.2 67.9L555.4 68.4L555.4 66.7L554.6 67.0L553.0 66.0L552.6 64.3L558.1 63.1L560.6 63.6L562.9 63.5Z" data-cc="EE"><title>Estonia</title></path>
+<path d="M533.1 80.4L533.7 81.9L533.1 82.7L534.0 83.8L534.8 85.4L534.6 86.5L535.8 88.4L534.7 88.7L534.1 88.4L529.3 91.0L530.1 93.2L532.8 95.2L532.0 96.6L531.2 97.0L531.4 99.6L530.7 98.9L529.5 98.8L527.8 99.4L525.6 99.3L525.3 100.1L524.1 99.2L523.3 99.4L520.7 98.5L520.2 99.1L518.1 99.1L518.4 96.9L519.5 94.8L516.0 94.2L514.9 93.4L515.0 92.1L514.5 91.4L514.7 89.3L514.2 86.1L515.6 86.1L516.2 85.0L516.7 82.2L516.2 81.2L516.6 80.6L518.6 80.4L519.0 81.1L520.6 79.6L520.0 78.5L519.8 76.8L521.6 77.2L523.0 76.7L523.1 77.9L525.5 78.6L525.6 79.6L527.9 79.1L529.2 78.2L531.9 79.4L533.1 80.4Z" data-cc="DE"><title>Germany</title></path>
+<path d="M556.0 109.6L556.9 110.9L557.8 110.7L559.8 111.2L563.4 111.4L564.6 110.6L567.4 109.8L569.3 111.0L570.8 111.3L569.7 112.6L569.0 114.8L570.0 116.6L567.8 116.2L565.4 117.2L565.5 118.8L563.2 119.1L561.4 118.0L559.4 118.8L557.6 118.7L557.2 116.7L555.9 115.7L556.3 115.2L555.9 114.8L556.3 113.8L557.1 112.9L555.8 111.5L555.5 110.4L556.0 109.6Z" data-cc="BG"><title>Bulgaria</title></path>
+<path d="M567.6 137.9L567.4 138.8L563.7 139.1L563.7 138.6L560.5 137.9L560.9 136.6L562.3 137.7L566.3 137.7L566.2 138.3L567.6 137.9ZM557.6 118.7L559.4 118.8L561.4 118.0L563.2 119.1L565.5 118.8L565.4 117.2L566.7 118.0L566.1 120.0L565.5 120.4L562.6 120.0L559.7 120.8L561.6 122.6L560.3 123.1L558.9 123.1L557.4 121.5L557.0 122.2L557.7 124.0L559.1 125.5L558.2 126.2L561.1 128.6L561.3 130.4L558.8 129.6L559.7 131.2L558.1 131.5L559.3 134.3L557.6 134.3L555.4 133.0L553.7 128.3L551.2 125.1L550.9 124.2L552.0 122.6L552.1 121.6L552.9 121.1L552.8 120.3L554.5 120.0L555.4 119.3L556.7 119.4L557.6 118.7Z" data-cc="GR"><title>Greece</title></path>
+<path d="M614.3 131.9L613.2 132.5L612.2 131.7L609.1 131.2L608.1 131.7L603.9 132.2L601.1 133.4L599.0 133.4L597.6 132.8L594.8 133.7L593.9 133.1L594.0 134.8L592.8 136.2L591.7 134.8L592.5 133.6L591.0 133.9L588.8 133.1L587.2 134.9L583.4 135.3L581.1 133.6L578.3 133.5L577.9 134.8L576.1 135.2L573.5 133.5L570.7 133.6L568.9 130.4L566.9 128.6L567.9 126.2L566.2 124.7L568.7 121.6L572.6 121.5L573.4 119.1L578.2 119.5L581.0 117.5L583.8 116.6L587.9 116.5L592.6 118.8L596.4 120.0L599.2 119.5L601.4 119.8L604.1 118.1L606.8 118.0L609.4 119.5L610.0 120.6L610.0 122.2L612.0 123.0L613.2 123.9L611.6 124.8L612.9 128.4L612.6 129.4L614.3 131.9ZM565.4 117.2L567.8 116.2L570.0 116.6L570.4 117.8L572.7 118.9L572.3 119.6L569.4 119.8L566.5 122.5L565.5 120.4L566.1 120.0L566.7 118.0L565.4 117.2Z" data-cc="TR"><title>Turkey</title></path>
+<path d="M552.8 120.3L552.9 121.1L552.1 121.6L552.0 122.6L550.9 124.2L550.5 123.9L550.4 123.2L548.9 122.2L548.6 120.7L548.9 117.5L548.2 116.0L549.2 114.5L549.4 115.1L550.0 114.8L551.3 116.0L551.3 118.2L551.7 119.5L552.8 120.3Z" data-cc="AL"><title>Albania</title></path>
+<path d="M540.5 102.6L543.2 104.3L545.3 104.9L546.2 104.4L547.7 106.5L546.9 107.7L545.7 107.0L544.0 107.0L541.8 106.5L540.7 106.6L540.2 107.2L539.3 106.5L538.8 107.8L544.0 113.4L546.3 114.6L546.0 115.1L539.8 111.9L537.5 109.6L538.0 109.4L536.8 108.1L536.7 107.0L535.1 106.5L534.4 107.9L533.6 106.8L533.7 105.7L535.4 105.8L535.8 105.3L537.7 105.8L537.6 105.0L538.4 104.6L538.6 103.4L540.5 102.6Z" data-cc="HR"><title>Croatia</title></path>
+<path d="M523.3 99.4L523.1 100.7L525.5 101.4L525.3 102.6L524.3 103.2L522.5 102.8L522.0 104.0L520.8 104.1L520.4 103.6L519.0 104.7L517.9 104.8L516.8 104.2L515.9 102.8L514.7 103.3L514.7 101.9L516.5 100.1L516.4 99.3L517.5 99.6L518.1 99.1L520.2 99.1L520.7 98.5L523.3 99.4Z" data-cc="CH"><title>Switzerland</title></path>
+<path d="M514.5 91.4L515.0 92.1L514.9 93.4L514.2 93.5L513.6 93.2L513.9 91.5L514.5 91.4Z" data-cc="LU"><title>Luxembourg</title></path>
+<path d="M514.7 89.3L514.5 91.4L513.9 91.5L513.6 93.2L511.5 91.8L510.3 92.1L507.5 89.4L506.3 89.3L506.0 88.3L507.9 87.7L509.6 87.9L511.8 87.3L514.7 89.3Z" data-cc="BE"><title>Belgium</title></path>
+<path d="M516.2 81.2L516.7 82.2L516.2 85.0L515.6 86.1L514.2 86.1L514.7 89.3L511.8 87.3L509.6 87.9L507.9 87.7L509.1 86.8L511.1 82.4L514.2 81.1L516.2 81.2Z" data-cc="NL"><title>Netherlands</title></path>
+<path d="M477.4 117.0L479.4 115.8L479.9 117.3L483.3 117.0L484.0 118.6L482.8 119.5L482.7 121.9L482.3 122.4L482.1 123.9L481.0 124.1L482.0 126.0L481.3 128.1L482.1 129.1L480.8 131.1L481.0 132.2L479.9 133.0L478.6 132.5L477.3 132.9L477.7 130.4L477.5 128.5L476.4 128.2L475.8 127.0L476.1 124.9L477.1 123.7L477.9 120.6L477.4 117.0Z" data-cc="PT"><title>Portugal</title></path>
+<path d="M481.0 132.2L480.8 131.1L482.1 129.1L481.3 128.1L482.0 126.0L481.0 124.1L482.1 123.9L482.3 122.4L482.7 121.9L482.8 119.5L484.0 118.6L483.3 117.0L479.9 117.3L479.4 115.8L477.4 117.0L477.6 114.8L476.6 113.4L480.2 111.2L489.2 112.2L495.3 112.2L496.3 113.4L500.8 114.8L501.7 114.2L504.6 115.6L507.4 115.2L507.6 117.0L505.2 119.1L502.0 119.8L501.8 120.8L500.3 122.6L499.3 125.1L500.3 127.0L498.8 128.4L498.3 130.4L496.3 131.1L494.5 133.5L488.8 133.5L486.2 135.8L485.0 135.6L484.0 134.5L483.3 132.7L481.0 132.2Z" data-cc="ES"><title>Spain</title></path>
+<path d="M485.5 80.0L485.8 82.2L484.0 84.9L479.7 86.7L476.4 86.2L478.4 83.1L477.3 80.0L482.4 76.3L482.9 77.9L482.3 79.5L483.8 79.4L485.5 80.0Z" data-cc="IE"><title>Ireland</title></path>
+<path d="M944.0 316.8L946.6 320.3L945.4 321.0L944.2 320.2L941.4 317.1L940.3 314.8L940.2 313.7L941.3 313.8L944.0 316.8Z" data-cc="NC"><title>New Caledonia</title></path>
+<path d="M941.2 283.2L941.8 284.3L939.9 284.3L939.1 282.3L940.7 283.1L941.2 283.2ZM940.4 280.4L939.9 281.0L938.2 278.2L937.8 276.3L938.8 276.3L939.5 278.9L940.4 280.4ZM938.0 281.3L935.3 281.0L934.8 280.5L935.1 279.3L936.9 279.8L938.0 281.3ZM935.4 275.4L936.0 277.0L931.7 273.5L932.1 273.2L935.4 275.4ZM928.9 272.2L929.9 273.3L929.3 273.4L928.2 272.7L927.2 271.4L927.3 270.9L928.9 272.2Z" data-cc="SB"><title>Solomon Islands</title></path>
+<path d="M946.2 377.2L941.6 381.1L938.8 382.4L938.9 381.5L938.2 381.1L941.3 378.5L941.5 376.7L939.5 375.5L940.3 374.3L942.8 373.2L945.7 368.7L945.8 366.6L946.2 366.1L945.2 361.9L945.3 359.7L946.3 359.4L946.8 361.2L948.4 362.0L947.6 364.8L947.6 368.2L948.9 366.0L949.6 366.9L948.6 369.3L950.0 370.3L951.6 370.6L953.8 369.4L954.9 369.7L950.7 374.4L948.8 374.3L947.5 375.3L946.9 376.7L946.2 377.2ZM921.1 388.2L926.9 385.0L929.5 382.6L930.9 381.8L932.4 380.1L935.1 378.6L934.6 381.2L937.1 380.0L937.0 381.3L936.2 382.6L929.0 387.7L928.9 389.2L927.0 389.2L924.1 390.4L918.4 395.6L913.6 397.9L911.4 397.8L910.6 396.8L908.1 396.6L908.5 395.4L911.4 393.1L916.5 390.0L921.1 388.2Z" data-cc="NZ"><title>New Zealand</title></path>
+<path d="M871.3 379.6L872.7 379.8L870.9 383.5L869.4 384.6L867.7 387.2L867.3 386.3L864.4 388.5L862.5 388.2L862.5 385.5L863.3 383.4L863.3 380.7L864.1 379.3L865.6 379.5L867.4 380.6L871.3 379.6ZM828.0 352.3L824.7 353.9L822.2 354.7L819.7 357.6L815.7 358.0L813.6 357.4L809.8 357.9L807.7 359.6L807.0 359.5L803.8 361.4L800.2 361.3L798.2 359.2L797.0 358.6L797.7 356.8L799.1 356.4L799.8 355.6L801.1 352.3L801.4 350.4L801.1 345.3L801.7 343.5L801.3 341.5L801.4 340.5L800.6 339.2L800.9 336.8L800.1 334.2L800.1 332.9L800.9 334.2L800.7 331.3L801.8 332.2L802.3 333.4L802.6 331.8L801.5 327.4L803.6 323.1L803.7 321.3L805.3 319.0L805.0 321.4L806.6 319.2L809.0 318.2L810.6 316.8L812.8 315.6L814.1 315.4L814.8 315.8L817.1 314.6L818.8 314.2L820.1 313.2L821.6 313.3L824.6 312.4L826.3 311.0L827.3 309.3L829.2 307.7L829.9 304.7L832.3 302.0L832.9 304.7L834.2 304.1L833.5 302.6L834.6 301.0L835.7 301.7L836.4 299.3L839.0 296.5L840.4 296.0L840.6 295.1L841.7 295.4L841.9 294.6L844.5 293.8L846.3 295.2L847.5 297.1L850.9 297.4L850.6 295.7L852.2 293.1L853.6 292.3L853.3 291.5L854.7 289.7L856.5 288.6L857.8 289.0L860.2 288.4L860.3 286.7L858.5 285.7L860.0 285.2L861.7 286.0L863.0 287.3L865.1 288.1L866.0 287.8L867.5 288.8L869.2 287.9L870.2 288.2L870.9 287.5L872.0 289.1L869.8 292.1L868.8 292.2L869.0 293.5L866.7 296.6L866.8 297.5L868.6 299.3L870.5 300.3L873.3 303.3L874.1 303.2L875.4 304.1L875.6 305.0L877.9 306.1L879.9 305.0L883.5 297.7L883.7 293.4L884.5 291.0L885.1 290.3L884.8 289.3L886.6 285.0L887.8 283.8L888.4 285.3L888.3 287.3L888.9 287.7L888.8 289.0L889.6 290.6L889.2 293.6L889.8 296.1L891.7 294.9L893.5 297.5L893.0 298.9L893.1 303.2L893.7 303.6L893.9 306.3L893.3 307.9L893.7 310.1L896.2 311.7L899.2 314.6L898.7 315.4L899.7 317.4L899.8 320.8L901.1 320.2L901.8 321.5L902.6 321.0L902.1 324.4L905.5 330.2L905.5 332.7L904.1 336.5L904.4 339.2L903.2 342.0L900.4 346.4L898.3 350.5L895.9 353.4L893.3 354.9L887.8 361.7L886.1 363.3L882.6 368.9L880.6 370.0L877.7 370.1L874.7 371.4L870.7 374.0L869.3 372.6L868.0 372.0L869.2 370.4L867.6 371.0L864.2 373.3L857.9 370.8L857.1 368.8L857.8 364.8L857.1 363.5L854.8 363.1L856.3 361.6L856.6 359.2L854.5 361.4L852.0 362.0L854.0 360.2L855.2 358.4L856.8 356.8L857.5 354.5L854.3 357.2L852.3 358.3L850.3 360.8L848.8 359.5L849.5 357.8L848.8 355.5L847.9 354.3L848.6 353.6L846.0 351.7L844.2 351.6L842.3 350.0L837.5 350.3L830.4 352.5L828.0 352.3Z" data-cc="AU"><title>Australia</title></path>
+<path d="M723.1 226.2L722.9 229.5L721.8 230.4L719.4 231.1L718.0 228.6L717.3 224.0L718.3 218.9L720.2 220.7L723.1 226.2Z" data-cc="LK"><title>Sri Lanka</title></path>
+<path d="M794.8 192.3L792.5 191.3L791.9 188.6L793.0 187.2L795.8 186.3L797.3 186.4L798.1 187.6L797.2 189.0L796.9 190.8L794.8 192.3ZM700.4 115.6L699.6 113.8L701.1 112.9L697.1 107.5L701.6 106.3L702.6 105.6L702.4 100.0L707.6 101.0L708.5 99.6L707.4 96.5L709.3 96.2L710.3 94.2L711.2 93.9L712.7 96.1L715.4 97.7L719.3 98.9L721.9 101.4L722.4 105.0L723.8 106.4L730.4 107.3L734.1 109.3L735.7 109.6L738.0 112.5L740.1 114.4L742.8 114.3L748.2 115.0L751.4 114.6L754.0 115.0L758.4 116.9L761.5 116.9L763.0 117.9L765.2 116.2L768.8 115.1L772.5 115.0L774.9 113.9L776.0 112.2L777.3 111.2L775.1 108.9L775.5 106.9L779.8 107.8L781.5 106.2L784.7 105.0L785.5 102.9L786.8 102.0L790.1 101.6L792.2 102.0L791.9 100.9L788.6 98.7L786.2 97.7L784.9 98.9L782.2 98.4L781.1 98.8L779.8 97.5L779.8 92.1L783.3 93.3L785.7 91.3L784.9 90.0L785.2 86.8L785.9 85.8L784.9 84.1L783.2 83.4L784.2 81.9L786.8 81.4L789.9 81.3L793.9 82.2L796.7 83.3L803.7 89.5L806.4 92.5L811.2 93.5L815.3 95.7L818.0 98.6L821.7 98.6L823.0 97.4L826.5 96.5L826.9 99.2L826.6 100.4L827.7 103.8L827.7 106.8L824.4 106.2L822.9 107.4L825.0 110.0L826.5 113.7L825.3 113.8L826.1 115.4L823.5 113.6L823.4 115.3L820.2 116.7L821.4 118.3L819.2 118.2L817.5 117.2L816.8 119.5L814.8 121.2L813.7 123.2L810.5 124.1L809.3 125.6L806.9 126.5L807.6 125.0L806.6 123.8L807.7 121.6L805.6 120.0L803.9 121.1L802.0 123.3L801.3 125.3L798.9 125.5L798.2 127.0L800.4 129.1L802.6 129.6L803.3 131.0L805.7 132.0L807.6 129.7L810.4 130.9L812.1 131.0L813.1 132.7L809.9 133.6L809.3 135.3L807.4 136.9L806.9 139.1L810.3 140.9L812.4 144.0L817.5 149.4L818.2 151.7L816.9 152.6L818.0 154.3L819.9 155.3L820.3 160.4L818.9 160.7L816.9 168.3L815.4 172.1L809.3 177.7L806.4 178.1L805.0 179.5L803.9 178.5L802.7 180.1L799.3 181.7L796.5 182.2L796.3 185.5L794.8 185.7L793.7 183.4L794.1 182.2L790.3 181.1L789.1 181.7L786.3 180.8L784.8 179.5L784.8 177.7L782.3 177.1L780.7 175.9L778.8 177.6L774.1 178.0L771.6 179.2L772.6 182.9L771.2 182.8L770.5 180.7L768.7 181.6L765.2 179.9L765.5 177.2L763.7 176.6L762.5 173.7L759.8 174.2L759.4 170.4L761.4 167.8L760.3 162.7L759.0 161.9L757.6 160.1L756.2 160.3L753.2 159.8L753.8 158.5L752.1 156.5L750.5 157.8L748.2 157.1L745.6 159.1L743.7 161.5L741.7 161.9L740.3 161.0L736.9 160.2L735.6 161.0L734.4 163.4L733.6 160.9L732.2 161.5L725.9 160.5L723.5 159.1L721.3 158.5L720.1 156.9L718.6 156.5L715.5 154.4L713.2 153.4L712.3 154.2L705.2 149.9L703.7 146.4L705.7 146.8L705.4 145.2L704.0 143.6L703.7 141.0L700.0 137.3L695.5 136.0L694.2 133.5L691.9 132.0L691.3 131.1L690.2 128.1L688.5 127.4L687.7 127.7L686.4 124.8L686.9 124.0L686.4 123.3L688.4 121.8L690.0 121.2L692.7 121.6L693.1 119.6L696.2 119.2L696.8 118.0L700.2 116.3L700.4 115.6Z" data-cc="CN"><title>People's Republic of China</title></path>
+<path d="M823.8 172.6L823.4 177.7L822.8 180.3L820.8 177.6L820.0 175.3L820.8 172.2L822.3 169.7L823.8 170.7L823.8 172.6Z" data-cc="TW"><title>Taiwan</title></path>
+<path d="M525.5 101.4L527.0 101.8L527.2 101.2L529.6 100.7L530.2 101.7L533.8 102.5L533.6 104.1L534.2 105.4L532.3 105.0L530.3 106.1L530.3 108.5L531.2 110.1L533.6 111.7L535.0 114.3L537.9 116.8L539.8 116.8L540.5 117.5L539.8 118.1L544.0 120.2L546.3 121.8L546.6 122.4L546.2 123.6L544.7 122.1L542.5 121.6L541.5 123.6L543.4 124.8L543.2 126.4L542.2 126.6L541.0 129.3L539.9 129.6L540.3 126.9L540.8 126.2L538.9 122.8L537.8 122.4L537.0 121.1L535.4 120.5L534.2 119.2L532.3 119.0L527.9 115.5L526.2 113.7L525.3 110.6L522.0 109.2L520.8 109.7L519.5 111.1L518.4 111.3L518.7 110.0L517.3 109.6L516.6 107.2L517.5 106.2L516.7 105.0L516.8 104.2L517.9 104.8L519.0 104.7L520.4 103.6L520.8 104.1L522.0 104.0L522.5 102.8L524.3 103.2L525.3 102.6L525.5 101.4ZM537.5 128.8L539.5 128.6L538.7 131.1L539.1 132.0L538.6 133.7L536.6 132.5L531.7 130.5L532.0 128.9L535.0 129.2L537.5 128.8ZM521.9 120.1L523.1 119.1L524.7 121.4L524.5 125.6L523.3 125.4L522.3 126.4L521.3 125.6L521.1 121.8L520.5 120.0L521.9 120.1Z" data-cc="IT"><title>Italy</title></path>
+<path d="M523.0 76.7L521.6 77.2L519.8 76.8L518.8 75.1L518.6 72.1L519.5 70.4L521.6 70.2L522.3 69.4L524.1 68.6L524.1 70.1L523.5 71.1L523.8 71.9L525.1 72.3L524.6 73.4L523.9 73.1L522.3 75.3L523.0 76.7ZM528.5 73.4L529.3 74.8L528.1 77.3L525.6 75.6L525.2 74.3L528.5 73.4Z" data-cc="DK"><title>Denmark</title></path>
+<path d="M485.5 80.0L483.8 79.4L482.3 79.5L482.9 77.9L482.4 76.3L484.4 76.1L486.8 78.0L485.5 80.0ZM492.7 81.4L493.1 79.7L491.5 77.8L488.7 77.3L488.2 76.5L489.1 75.1L488.3 74.3L487.1 75.7L487.0 72.9L485.9 71.4L486.8 68.3L488.7 66.0L493.2 65.9L490.7 69.1L495.5 68.7L494.9 71.1L492.8 73.8L495.2 73.9L497.4 77.8L499.0 78.3L501.1 82.9L504.0 83.4L503.7 85.4L502.5 86.3L503.4 87.8L501.3 89.4L498.1 89.4L494.0 90.2L492.9 89.6L491.3 91.1L489.1 90.7L487.4 91.9L486.2 91.3L489.7 88.1L491.9 87.4L488.2 86.9L487.5 85.7L490.0 84.8L488.8 83.1L489.3 81.2L492.7 81.4Z" data-cc="GB"><title>United Kingdom</title></path>
+<path d="M469.2 43.8L468.5 45.6L470.7 47.5L467.7 49.6L459.3 52.0L450.6 50.7L452.9 49.5L448.4 48.1L452.3 47.6L452.3 46.8L447.9 46.1L449.6 44.3L452.9 43.9L456.0 45.8L459.4 44.3L462.0 45.1L465.7 43.6L469.2 43.8Z" data-cc="IS"><title>Iceland</title></path>
+<path d="M616.1 117.1L616.8 117.2L618.9 119.1L620.0 119.3L620.3 118.5L621.6 117.3L624.9 121.2L626.1 121.3L627.0 122.2L625.0 122.4L624.7 126.0L623.9 126.7L624.2 128.3L623.6 128.4L621.8 126.8L622.4 125.2L621.5 124.3L620.6 124.5L618.0 126.9L617.6 124.7L615.1 123.3L615.7 122.3L614.2 121.2L614.5 120.4L612.8 119.0L613.4 118.5L616.8 119.6L617.1 119.2L615.5 117.5L616.1 117.1ZM617.1 127.0L615.3 126.5L613.8 125.1L613.2 123.9L613.7 123.8L614.6 124.6L615.7 124.6L617.1 127.0Z" data-cc="AZ"><title>Azerbaijan</title></path>
+<path d="M599.2 112.1L599.5 111.8L605.4 112.8L609.0 114.3L609.6 114.9L611.0 114.4L613.4 115.1L614.4 116.4L616.1 117.1L615.5 117.5L617.1 119.2L616.8 119.6L615.4 119.4L613.4 118.5L612.8 119.0L609.4 119.5L606.8 118.0L604.1 118.1L604.3 116.8L603.3 114.6L601.7 113.5L600.3 113.1L599.2 112.1Z" data-cc="GE"><title>Georgia</title></path>
+<path d="M828.1 209.8L826.4 207.4L828.7 207.5L829.8 208.6L829.4 211.4L828.1 209.8ZM833.8 218.4L834.4 217.5L834.5 215.5L835.9 215.4L835.7 217.5L837.4 214.4L837.5 217.5L835.2 221.4L833.3 219.3L833.8 218.4ZM844.6 223.4L845.3 227.2L844.6 230.1L843.4 226.9L842.2 228.5L843.2 230.9L842.5 232.3L839.2 230.5L838.3 228.2L839.0 226.7L837.2 225.2L836.4 226.5L835.1 226.4L833.2 228.2L832.7 227.2L833.6 224.6L836.6 222.5L837.7 223.9L839.7 223.0L840.0 221.6L841.9 221.6L841.5 219.1L843.9 220.6L844.6 223.4ZM822.9 220.5L819.5 223.5L820.6 221.3L823.9 217.2L825.0 214.0L825.7 216.6L824.1 218.3L822.9 220.5ZM829.5 192.2L829.2 193.6L830.6 195.8L830.3 198.5L828.9 199.5L828.8 202.1L829.8 204.6L831.3 205.0L832.4 204.6L836.1 206.4L836.0 208.1L837.0 208.8L836.9 210.3L834.6 208.7L833.4 207.1L832.8 208.2L830.9 206.3L828.5 206.8L827.0 206.1L827.0 204.8L827.7 204.0L826.8 203.3L826.6 204.4L825.0 202.6L824.4 201.2L823.8 198.2L825.1 199.2L824.6 194.2L824.9 191.4L826.6 191.4L828.4 192.3L829.1 191.4L829.5 192.2ZM831.8 213.9L831.2 212.3L833.0 213.3L834.7 213.3L834.8 214.6L833.7 216.0L832.0 216.9L831.8 215.5L831.8 213.9ZM840.9 211.5L842.1 215.0L839.9 214.2L841.0 217.2L839.8 217.9L839.4 215.7L838.6 215.5L837.9 213.6L839.6 213.9L839.4 212.7L837.4 210.2L840.0 210.3L840.9 211.5Z" data-cc="PH"><title>Philippines</title></path>
+<path d="M773.2 229.5L773.7 229.0L776.0 230.4L776.3 232.0L778.1 231.6L778.9 230.3L781.2 232.5L782.5 234.6L782.5 238.2L783.0 241.2L784.0 242.0L785.1 244.8L785.1 245.9L783.1 246.1L777.2 241.3L776.9 239.7L775.2 237.5L774.8 234.9L773.7 233.2L773.9 230.9L773.2 229.5ZM822.2 236.9L819.8 236.4L816.7 236.4L815.8 240.0L814.8 241.1L813.5 245.5L811.3 246.1L808.7 245.3L807.4 245.5L805.8 247.1L804.0 246.9L802.3 247.6L800.4 245.8L799.9 243.7L801.9 244.7L804.0 244.1L804.5 241.5L805.7 240.9L808.9 240.2L812.1 235.7L813.4 237.3L813.9 236.2L815.2 236.3L815.4 232.8L817.4 230.6L818.6 228.1L819.7 228.1L821.2 229.7L821.4 231.1L825.6 232.9L825.4 234.1L823.6 234.3L824.2 235.8L822.2 236.9Z" data-cc="MY"><title>Malaysia</title></path>
+<path d="M815.4 232.8L815.2 236.3L813.9 236.2L813.4 237.3L812.1 235.7L815.4 232.8Z" data-cc="BN"><title>Brunei</title></path>
+<path d="M533.8 102.5L535.8 102.8L537.0 102.1L539.1 102.0L539.5 101.5L539.9 101.5L540.5 102.6L538.6 103.4L538.4 104.6L537.6 105.0L537.7 105.8L535.8 105.3L535.4 105.8L533.7 105.7L534.2 105.4L533.6 104.1L533.8 102.5Z" data-cc="SI"><title>Slovenia</title></path>
+<path d="M559.4 36.7L559.5 38.6L563.0 40.4L561.5 42.4L564.6 45.6L563.6 47.9L566.0 50.0L565.4 51.9L569.0 53.8L568.5 55.2L562.6 60.5L558.6 60.8L551.3 62.4L549.8 60.8L547.5 59.9L547.6 57.1L546.2 54.5L547.0 52.9L548.8 51.1L554.6 47.5L554.2 46.3L551.0 45.0L550.1 43.9L549.4 39.7L542.9 36.6L544.0 35.9L546.5 37.3L549.2 37.2L551.6 37.8L553.3 36.6L554.0 34.7L557.0 33.8L559.9 34.8L559.4 36.7Z" data-cc="FI"><title>Finland</title></path>
+<path d="M554.4 94.6L553.4 96.6L552.9 96.9L550.3 96.0L549.5 96.2L549.0 96.9L545.5 97.7L545.4 98.3L543.4 98.7L541.1 97.5L540.8 96.5L541.3 95.4L543.1 95.1L544.6 93.3L545.5 93.5L546.4 93.1L547.7 94.2L549.1 93.5L550.3 93.8L552.0 93.4L554.4 94.6Z" data-cc="SK"><title>Slovakia</title></path>
+<path d="M535.8 88.4L537.0 89.4L538.8 89.6L538.7 90.5L540.0 91.1L540.3 90.3L542.0 90.7L542.3 91.6L544.1 91.8L545.3 93.3L544.6 93.3L543.7 94.0L543.1 95.1L541.3 95.4L541.0 96.1L539.8 95.5L538.7 95.7L536.8 94.7L535.9 95.0L534.7 96.2L530.1 93.2L529.3 91.0L534.1 88.4L534.7 88.7L535.8 88.4Z" data-cc="CZ"><title>Czech Republic</title></path>
+<path d="M598.7 204.3L598.3 203.1L599.5 196.3L600.3 195.3L602.2 194.8L603.5 193.0L605.2 196.6L606.1 199.6L611.5 204.1L615.6 208.8L617.0 209.8L616.2 210.6L615.0 210.3L610.8 205.3L608.4 204.0L606.6 204.0L605.9 203.3L604.3 204.1L602.6 202.6L601.9 205.0L598.7 204.3Z" data-cc="ER"><title>Eritrea</title></path>
+<path d="M859.3 125.6L858.5 128.7L860.0 132.0L860.2 134.6L861.3 136.1L860.9 138.4L858.3 139.9L853.8 140.1L851.6 143.7L849.3 142.5L848.3 140.1L844.1 140.8L841.6 142.3L838.6 142.4L842.1 144.7L842.3 150.1L841.1 151.5L839.4 150.2L839.0 147.4L837.1 146.4L835.2 144.3L837.3 143.3L837.9 141.3L839.9 139.6L840.9 137.4L845.6 136.5L848.6 137.2L848.9 131.5L851.3 133.0L854.5 128.6L854.3 124.7L852.1 121.2L852.1 119.2L854.5 118.6L858.1 123.0L859.3 125.6ZM858.2 110.5L859.2 109.2L861.7 112.7L858.5 113.6L858.0 116.7L853.0 114.5L853.4 118.0L850.7 118.0L848.7 114.9L848.6 112.5L851.2 112.3L848.8 105.5L853.6 108.8L858.2 110.5ZM842.7 143.7L843.4 141.8L845.0 142.2L845.6 140.8L847.7 141.5L848.5 142.6L847.8 144.6L846.3 143.5L845.3 144.3L845.3 146.1L843.2 145.2L842.7 143.7Z" data-cc="JP"><title>Japan</title></path>
+<path d="M343.9 314.0L344.9 315.7L345.1 320.0L348.0 320.7L349.1 320.0L350.9 320.9L351.5 321.8L352.5 326.0L353.6 326.1L354.5 325.6L355.5 326.2L355.7 327.9L355.1 334.5L353.1 336.9L351.0 337.4L345.2 336.1L347.2 331.2L346.7 329.8L343.8 328.6L340.3 326.2L338.0 325.7L332.5 320.6L333.1 316.7L333.0 315.0L334.0 312.2L338.6 311.3L341.1 311.4L343.8 313.0L343.9 314.0Z" data-cc="PY"><title>Paraguay</title></path>
+<path d="M639.8 189.8L643.4 197.2L641.5 198.1L641.1 200.6L634.2 203.4L631.9 205.7L629.9 205.6L628.4 207.0L626.7 207.6L623.8 207.9L622.1 209.8L620.8 209.7L619.9 210.1L618.1 210.0L617.3 208.1L617.3 206.4L616.1 203.1L615.3 201.8L615.8 201.7L615.6 198.2L616.7 197.2L616.3 195.9L617.0 194.3L618.1 195.1L621.9 194.8L625.1 195.4L626.1 195.2L626.8 196.3L628.1 195.8L629.8 192.4L632.2 191.0L639.8 189.8Z" data-cc="YE"><title>Yemen</title></path>
+<path d="M591.7 156.8L594.7 157.3L595.7 156.3L596.2 155.2L598.2 154.7L598.5 153.7L599.3 153.1L596.4 149.9L601.5 148.3L601.9 147.9L605.2 148.7L609.3 151.0L617.4 157.4L624.6 157.9L625.5 159.5L627.3 159.4L628.7 162.1L630.0 162.8L630.6 164.0L632.6 165.3L632.7 167.7L633.2 168.8L635.0 171.5L635.8 172.1L636.6 171.9L638.7 177.1L646.9 178.7L647.4 178.0L648.8 180.2L647.6 186.6L639.8 189.8L632.2 191.0L629.8 192.4L628.1 195.8L626.8 196.3L626.1 195.2L625.1 195.4L621.9 194.8L618.1 195.1L617.0 194.3L616.3 195.9L616.7 197.2L615.6 198.2L615.1 196.9L614.3 195.9L614.0 194.6L612.5 193.5L610.9 190.8L610.0 188.2L608.0 186.0L606.8 185.5L604.8 182.5L604.3 178.4L602.5 174.9L601.2 173.6L599.7 173.0L597.9 168.8L597.1 168.1L592.5 160.9L591.2 160.9L591.7 156.8Z" data-cc="SA"><title>Saudi Arabia</title></path>
+<path d="M584.2 138.4L584.7 137.6L586.6 137.6L588.8 136.7L587.2 138.0L587.5 138.6L586.2 138.8L585.9 138.3L584.2 138.4Z" data-cc="CY"><title>Turkish Republic of Northern Cyprus</title></path>
+<path d="M584.2 138.4L585.9 138.3L586.2 138.8L587.2 138.5L587.6 138.9L585.0 140.2L583.7 139.8L583.0 138.5L584.2 138.4Z" data-cc="CY"><title>Cyprus</title></path>
+<path d="M494.4 138.3L495.4 140.3L496.4 145.6L497.1 146.3L496.6 147.5L493.2 148.1L492.0 149.3L490.5 149.5L490.4 151.9L487.3 153.2L486.3 154.8L481.5 156.1L477.2 158.4L476.8 163.9L475.1 164.0L474.3 164.8L472.1 164.3L469.9 164.7L469.0 167.2L468.1 167.4L466.8 171.4L463.0 174.9L462.0 179.3L460.9 180.7L460.5 181.8L454.4 182.1L454.6 180.6L455.7 179.7L456.6 178.1L456.5 177.0L457.4 174.8L459.0 172.7L459.9 172.2L460.7 170.4L460.8 168.7L461.8 166.7L463.6 165.5L465.4 162.3L466.8 161.0L469.2 160.7L472.7 157.6L474.9 155.0L474.4 151.0L475.8 146.6L477.6 144.4L482.1 141.7L484.8 136.4L486.7 136.4L488.2 137.8L490.6 137.6L494.4 138.3Z" data-cc="MA"><title>Morocco</title></path>
+<path d="M598.6 180.2L566.8 180.2L565.6 157.2L564.7 154.6L565.2 152.6L564.7 151.3L565.6 149.8L569.0 149.7L575.5 152.0L578.4 150.1L580.7 149.8L582.6 150.2L583.4 151.8L584.0 150.7L586.1 151.5L588.2 151.7L589.4 150.9L591.6 156.3L590.0 161.7L589.4 162.2L587.2 159.8L584.9 155.2L584.7 155.5L590.3 167.0L595.0 174.1L594.5 174.7L594.7 176.7L598.6 180.2Z" data-cc="EG"><title>Egypt</title></path>
+<path d="M566.8 180.2L567.1 186.6L564.0 186.6L564.0 187.9L542.3 175.8L537.8 178.7L536.2 176.9L532.0 175.6L530.8 173.6L528.6 172.1L527.4 172.7L526.4 170.9L526.3 169.5L524.7 167.2L525.7 165.9L525.5 160.7L525.9 158.1L524.8 153.8L526.1 153.0L526.3 151.7L525.9 150.4L529.7 147.2L529.8 144.8L532.9 145.9L533.9 145.6L536.1 146.1L539.6 147.5L541.0 150.4L547.1 152.3L549.9 153.9L551.2 153.1L552.3 151.6L551.6 149.2L552.3 147.6L554.1 146.1L555.9 145.7L559.4 146.3L560.4 147.8L564.9 148.7L565.6 149.8L564.7 151.3L565.2 152.6L564.7 154.6L565.6 157.2L566.8 180.2Z" data-cc="LY"><title>Libya</title></path>
+<path d="M630.3 224.7L622.9 234.2L619.3 234.3L616.9 236.5L615.1 236.6L614.4 237.6L612.5 237.6L611.4 236.5L608.9 237.9L608.2 239.2L605.7 238.6L604.2 238.6L600.7 235.9L598.8 235.9L597.9 234.9L597.8 233.1L596.4 232.6L594.7 229.1L593.5 228.4L593.0 227.1L591.6 225.6L589.9 225.4L590.8 223.6L592.2 223.5L592.6 222.5L592.5 219.7L593.2 216.3L594.5 215.5L595.8 211.7L597.4 210.2L598.4 207.0L598.7 204.3L601.9 205.0L602.6 202.6L604.3 204.1L605.9 203.3L606.6 204.0L608.4 204.0L610.8 205.3L612.8 207.4L615.0 210.3L613.2 213.2L613.6 215.0L615.7 214.8L616.4 215.4L615.8 216.5L619.0 220.9L628.0 224.7L630.3 224.7Z" data-cc="ET"><title>Ethiopia</title></path>
+<path d="M615.0 210.3L616.2 210.6L617.0 209.8L617.6 210.8L617.6 212.1L616.1 212.8L617.3 213.7L616.4 215.4L615.7 214.8L613.6 215.0L613.2 213.2L615.0 210.3Z" data-cc="DJ"><title>Djibouti</title></path>
+<path d="M633.1 213.9L633.3 220.1L630.3 224.7L628.0 224.7L619.0 220.9L615.8 216.5L617.3 213.7L618.2 214.3L618.8 215.6L620.1 216.9L626.9 215.8L631.5 214.0L633.1 213.9Z" data-cc="SO"><title>Somaliland</title></path>
+<path d="M592.7 253.0L584.2 253.2L581.6 254.6L580.9 254.2L580.9 251.9L581.6 250.6L581.7 248.1L583.3 245.0L585.3 243.0L584.2 242.6L584.3 238.9L585.4 238.0L587.2 238.7L589.4 238.0L591.3 238.0L592.9 236.6L594.3 238.7L595.8 244.0L592.7 249.7L592.7 253.0Z" data-cc="UG"><title>Uganda</title></path>
+<path d="M583.2 253.6L584.3 255.4L584.1 257.2L583.3 257.6L581.9 257.4L581.0 259.2L579.4 259.0L579.6 257.3L580.0 257.0L580.1 255.1L580.9 254.2L581.6 254.6L583.2 253.6Z" data-cc="RW"><title>Rwanda</title></path>
+<path d="M546.3 114.6L544.0 113.4L540.7 110.2L538.8 107.8L539.3 106.5L540.2 107.2L540.7 106.6L541.8 106.5L544.0 107.0L545.7 107.0L546.9 107.7L547.8 107.7L547.2 109.1L548.5 110.3L548.3 111.7L546.5 112.9L546.3 114.6Z" data-cc="BA"><title>Bosnia and Herzegovina</title></path>
+<path d="M555.9 115.7L557.2 116.7L557.6 118.7L556.7 119.4L555.4 119.3L554.5 120.0L552.8 120.3L551.7 119.5L551.3 118.2L551.9 116.5L555.9 115.7Z" data-cc="MK"><title>North Macedonia</title></path>
+<path d="M546.2 104.4L548.0 103.6L549.5 103.7L551.0 105.0L551.3 106.0L552.9 106.7L553.2 108.0L554.7 108.9L555.4 108.2L556.1 108.6L555.5 109.1L556.0 109.6L555.5 110.4L555.8 111.5L557.1 112.9L556.3 113.8L555.9 114.8L556.3 115.2L555.9 115.7L553.9 115.9L554.3 114.5L551.7 112.7L551.3 112.8L551.0 113.9L550.5 114.1L550.6 113.8L547.7 111.9L548.3 111.7L548.5 110.3L547.2 109.1L547.8 107.7L546.9 107.7L547.7 106.5L546.2 104.4Z" data-cc="RS"><title>Serbia</title></path>
+<path d="M550.0 114.8L549.4 115.1L549.2 114.5L548.2 116.0L548.5 117.0L546.0 115.1L546.5 112.9L547.7 111.9L550.6 113.8L550.0 114.8Z" data-cc="ME"><title>Montenegro</title></path>
+<path d="M551.5 117.1L551.3 116.0L550.0 114.8L551.7 112.7L554.3 114.5L553.9 115.9L551.9 116.5L551.8 117.1L551.5 117.1Z" data-cc="XK"><title>Kosovo</title></path>
+<path d="M332.2 215.9L334.3 215.6L334.1 218.0L331.8 218.3L331.3 218.1L332.2 217.2L332.2 215.9Z" data-cc="TT"><title>Trinidad and Tobago</title></path>
+<path d="M584.3 238.9L581.9 236.8L581.2 235.4L579.7 236.1L578.4 235.9L577.7 236.4L576.5 236.0L574.3 232.4L572.3 231.2L571.6 229.3L568.5 226.3L568.5 225.2L565.1 222.7L566.9 221.8L568.2 217.5L570.2 217.0L572.1 219.8L572.9 220.0L573.8 219.5L575.8 219.6L576.2 220.2L578.9 220.2L579.0 219.6L580.4 219.0L580.6 218.1L581.6 217.4L584.0 219.3L585.4 218.9L588.1 214.9L587.8 213.0L587.2 212.1L588.8 211.9L588.9 211.2L590.2 211.4L590.0 213.8L590.3 216.1L591.8 217.3L592.1 220.0L592.5 220.0L592.6 222.5L592.2 223.5L590.8 223.6L589.9 225.4L591.6 225.6L593.0 227.1L593.5 228.4L594.7 229.1L596.4 232.6L591.3 238.0L589.4 238.0L587.2 238.7L585.4 238.0L584.3 238.9Z" data-cc="SS"><title>South Sudan</title></path>
+          </g>
+          <g id="mapOver"></g>
+        </svg>
+        <div class="viz-ctrl">
+          <button type="button" id="mapIn" aria-label="Zoom in">+</button>
+          <button type="button" id="mapOut" aria-label="Zoom out">−</button>
+          <button type="button" id="mapFit">Partners</button>
+          <button type="button" id="mapWorld">World</button>
+        </div>
+        <div class="viz-hint" id="mapHint" hidden>Click the map first, then zoom with the mouse wheel</div>
+        <div class="tip" id="mapTip" hidden></div>
+      </div>
+      <div class="legend" id="mapLegend"></div>
+    </section>
+    <section class="block no-print">
+      <h2 class="block-title">Co-author network</h2>
+      <p class="prose muted">Each dot is a co-author, sized by the number of papers we wrote together and coloured by the main topic of those papers. Lines join co-authors who published together. Hover over or tap a dot to see that person’s links. After clicking or tapping the network once, you can drag the dots to rearrange it.</p>
+      <div class="pills" id="netFilters"></div>
+      <div class="viz net" id="netWrap">
+        <svg id="netSvg" aria-label="Network of co-authors"><g id="netG"></g></svg>
+        <div class="viz-ctrl">
+          <button type="button" id="netIn" aria-label="Zoom in">+</button>
+          <button type="button" id="netOut" aria-label="Zoom out">−</button>
+          <button type="button" id="netFit">Fit</button>
+        </div>
+        <div class="viz-hint" id="netHint" hidden>Click the network first, then zoom with the mouse wheel</div>
+        <div class="tip" id="netTip" hidden></div>
+      </div>
+      <div class="legend" id="netLegend"></div>
+    </section>
     <section class="block">
       <h2 class="block-title">Academic partners</h2>
       <ul class="plist" id="collabAcademic"></ul>
@@ -1070,9 +1364,436 @@ const PUBS = [
     $("projects").innerHTML = list.map(p => `<article class="project"><div class="pmeta"><span class="when mono">${esc(p.years)}</span><span class="tag${p.active ? " hot" : ""}">${p.active ? "Active" : KIND[p.kind]}</span></div><div><h3>${esc(p.title)}</h3><p class="prole${p.lead ? " lead" : ""}">${esc(p.role)}</p><div class="meta">${esc(p.funder)}</div><p>${esc(p.text)}</p></div></article>`).join("");
   }
   $("projectFilters").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; projKind = b.dataset.k; renderProjects(); });
-  $("collabAcademic").innerHTML = plistItems(CV.collaborations.academic);
-  $("collabNonAcademic").innerHTML = plistItems(CV.collaborations.nonAcademic);
-  $("collabOther").textContent = CV.collaborationsOther.join(", ") + ".";
+  /* Collaborations: topic badges, partner lists, map and co-author network */
+  const NS = "http://www.w3.org/2000/svg";
+  const RAYS = [0, 1, 2, 3, 4, 5, 6, 7].map(i => { const a = i * Math.PI / 4, c = Math.cos(a), s = Math.sin(a); return `M${(2.9 * c).toFixed(2)} ${(2.9 * s).toFixed(2)}L${(5.2 * c).toFixed(2)} ${(5.2 * s).toFixed(2)}`; }).join("");
+  const GLYPH = {
+    edge: '<rect class="gl" x="-3.2" y="-3.2" width="6.4" height="6.4" rx="1"/><path class="gl" d="M-1.4 -3.2V-5.2M1.4 -3.2V-5.2M-1.4 3.2V5.2M1.4 3.2V5.2M-3.2 -1.4H-5.2M-3.2 1.4H-5.2M3.2 -1.4H5.2M3.2 1.4H5.2"/>',
+    sysid: '<path class="gl" d="M-5.2 0C-4 -5 -1.2 -5 0 0S4 5 5.2 0"/>',
+    gw: '<circle class="gl-f" cx="-4" cy="0" r="1.4"/><path class="gl" d="M-1.2 -2.8A4 4 0 0 1 -1.2 2.8M1.6 -5A7.5 7.5 0 0 1 1.6 5"/>',
+    ae: `<circle class="gl-f" r="1.5"/><path class="gl" d="${RAYS}"/>`,
+    net: '<path class="gl" d="M-3.6 3L0 -3.6L3.6 3Z"/><circle class="gl-f" cx="0" cy="-3.6" r="1.8"/><circle class="gl-f" cx="-3.6" cy="3" r="1.8"/><circle class="gl-f" cx="3.6" cy="3" r="1.8"/>',
+    cs: '<path class="gl" d="M-5.4 0H-1.2M-3.2 -2.1L-1.1 0L-3.2 2.1M5.4 0H1.2M3.2 -2.1L1.1 0L3.2 2.1"/>',
+    ind: '<path class="gl" d="M-5.4 -1.8H5.4M-4.2 -1.8V4.4M4.2 -1.8V4.4M-4.2 4.4Q0 -1.2 4.2 4.4"/>',
+    other: '<path class="gl" d="M-4.4 4.4C-4.4 -1.8 -0.6 -4.6 4.6 -4.6C4.6 0.6 1.4 4.4 -4.4 4.4ZM-4.4 4.4L1.4 -1.4"/>',
+    dft: '<rect class="gl" x="-4.8" y="-4.8" width="9.6" height="9.6" rx="1.4"/><path class="gl" d="M-2.6 0.2L-0.7 2.2L2.8 -1.9"/>',
+    misc: '<circle class="gl" cx="-1.9" cy="0" r="2.9"/><circle class="gl" cx="1.9" cy="0" r="2.9"/>',
+    home: '<path class="gl" d="M-4.8 0.4L0 -4.2L4.8 0.4M-3.3 -1V4.4H3.3V-1"/>'
+  };
+  const topicOf = k => TOPICS[k] || TOPICS.misc;
+  const badge = (k, sq) => `<span class="badge${sq ? " sq" : ""}" style="background:${topicOf(k).color}"><svg viewBox="-6.5 -6.5 13 13" aria-hidden="true">${GLYPH[k] || GLYPH.misc}</svg></span>`;
+  const topicChips = (ts, sq) => `<div class="tchips">${ts.map(k => `<span>${badge(k, sq)}${esc(topicOf(k).label)}</span>`).join("")}</div>`;
+  const HOME = CV.collaborationHome;
+  const PARTNERS = CV.collaborations;
+  const isOwn = p => p.name.startsWith(HOME.name);
+  const listed = PARTNERS.filter(p => p.where);
+  const collabItems = list => list.map(p => `<li><div class="ph"><span class="what">${p.url ? ext(p.url, p.name) : esc(p.name)}</span>${p.when ? `<span class="when mono">${esc(p.when)}</span>` : ""}</div><div class="where">${esc(p.where)}</div>${topicChips(p.topics, p.type !== "academic")}</li>`).join("");
+  $("collabAcademic").innerHTML = collabItems(listed.filter(p => p.type === "academic"));
+  $("collabNonAcademic").innerHTML = collabItems(listed.filter(p => p.type !== "academic"));
+  const others = PARTNERS.filter(p => !p.where);
+  $("collabOther").innerHTML = others.map(p => p.url ? ext(p.url, p.name) : esc(p.name)).join(", ") + ".";
+  $("collabOther").parentElement.hidden = !others.length;
+
+  /* Co-authors, counted from PUBS */
+  const ME = CV.pubName || "Zonzini F.";
+  const AUTH = new Map();
+  PUBS.forEach(p => {
+    const au = [...new Set(p.au.split(/,\s*/).map(s => s.trim()).filter(Boolean))].filter(a => a !== ME);
+    au.forEach(a => {
+      let r = AUTH.get(a);
+      if (!r) AUTH.set(a, r = {id: a, n: 0, th: {}, y0: p.y, y1: p.y, nb: new Map()});
+      r.n++; r.y0 = Math.min(r.y0, p.y); r.y1 = Math.max(r.y1, p.y);
+      (p.th || []).forEach(t => { r.th[t] = (r.th[t] || 0) + 1; });
+    });
+    au.forEach(a => au.forEach(b => { if (a < b) { const m = AUTH.get(a).nb; m.set(b, (m.get(b) || 0) + 1); } }));
+  });
+  const THEME_KEYS = Object.keys(THEMES);
+  AUTH.forEach(r => { r.theme = THEME_KEYS.reduce((best, k) => (r.th[k] || 0) > (r.th[best] || 0) ? k : best, THEME_KEYS[0]); });
+  const countries = new Set([HOME.country, ...PARTNERS.filter(p => p.country).map(p => p.country)]);
+  $("collabStats").innerHTML = [
+    [PARTNERS.filter(p => !isOwn(p)).length, "partner organizations"],
+    [countries.size, "countries"],
+    [AUTH.size, "co-authors on my publications"]
+  ].map(([n, t]) => `<div class="stat"><b>${n}</b><span>${t}</span></div>`).join("");
+
+  /* Pan and zoom for an SVG, shared by the map and the network */
+  function makeView(wrap, svg, hint, o) {
+    const V = {cx: 0, cy: 0, k: 1, W: 0, H: 0, moved: false, active: false, ready: false};
+    const fitK = (b, pad) => Math.min((V.W - 2 * pad) / Math.max(b[2] - b[0], 1e-6), (V.H - 2 * pad) / Math.max(b[3] - b[1], 1e-6));
+    const clamp = () => { const [a, b] = o.limits(fitK); V.k = Math.min(b, Math.max(a, V.k)); };
+    const apply = () => { svg.setAttribute("viewBox", `${V.cx - V.W / 2 / V.k} ${V.cy - V.H / 2 / V.k} ${V.W / V.k} ${V.H / V.k}`); o.onView(V.k); };
+    V.fitK = fitK; V.apply = apply;
+    V.fit = (b, pad = 28) => { V.cx = (b[0] + b[2]) / 2; V.cy = (b[1] + b[3]) / 2; V.k = fitK(b, pad); clamp(); apply(); };
+    V.toData = (px, py) => [V.cx + (px - V.W / 2) / V.k, V.cy + (py - V.H / 2) / V.k];
+    V.toScreen = (x, y) => [(x - V.cx) * V.k + V.W / 2, (y - V.cy) * V.k + V.H / 2];
+    V.zoomAt = (px, py, f) => { const [x, y] = V.toData(px, py); V.k *= f; clamp(); V.cx = x - (px - V.W / 2) / V.k; V.cy = y - (py - V.H / 2) / V.k; V.moved = true; apply(); };
+    let hideHint;
+    const flash = text => { hint.textContent = text; hint.hidden = false; clearTimeout(hideHint); hideHint = setTimeout(() => { hint.hidden = true; }, 1800); };
+    const setActive = on => { V.active = on; wrap.classList.toggle("active", on); };
+    new ResizeObserver(() => {
+      const W = wrap.clientWidth, H = wrap.clientHeight;
+      if (!W || !H) return;
+      V.W = W; V.H = H;
+      if (!V.ready || !V.moved) { V.ready = true; o.reset(); } else apply();
+    }).observe(wrap);
+    const rel = e => { const r = wrap.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    const pts = new Map();
+    let moved = 0, tapTarget = null, grab = null;
+    svg.addEventListener("pointerdown", e => {
+      if (e.button > 0) return;
+      if (e.pointerType === "mouse") setActive(true);
+      pts.set(e.pointerId, rel(e));
+      try { svg.setPointerCapture(e.pointerId); } catch (err) { /* not needed */ }
+      if (pts.size === 1) { moved = 0; tapTarget = e.target; grab = V.active && o.grab ? o.grab(e.target) : null; }
+      else if (grab) { o.release(grab); grab = null; }
+    });
+    svg.addEventListener("pointermove", e => {
+      const q = pts.get(e.pointerId);
+      if (!q) return;
+      const p = rel(e);
+      moved += Math.hypot(p[0] - q[0], p[1] - q[1]);
+      pts.set(e.pointerId, p);
+      if (!V.active) { if (moved > 12) flash(o.touchHint); return; }
+      if (pts.size === 1) {
+        if (grab) o.drag(grab, V.toData(p[0], p[1]));
+        else if (moved > 3) { V.cx -= (p[0] - q[0]) / V.k; V.cy -= (p[1] - q[1]) / V.k; V.moved = true; apply(); }
+      } else if (pts.size === 2) {
+        const r = [...pts.entries()].find(([id]) => id !== e.pointerId)[1];
+        const d0 = Math.hypot(q[0] - r[0], q[1] - r[1]), d1 = Math.hypot(p[0] - r[0], p[1] - r[1]);
+        const m0 = [(q[0] + r[0]) / 2, (q[1] + r[1]) / 2], m1 = [(p[0] + r[0]) / 2, (p[1] + r[1]) / 2];
+        V.cx -= (m1[0] - m0[0]) / V.k; V.cy -= (m1[1] - m0[1]) / V.k;
+        if (d0 > 0) V.zoomAt(m1[0], m1[1], d1 / d0); else apply();
+        moved = 99;
+      }
+    });
+    const up = e => {
+      if (!pts.has(e.pointerId)) return;
+      pts.delete(e.pointerId);
+      if (grab && pts.size === 0) { o.release(grab); grab = null; }
+      if (e.type === "pointerup" && pts.size === 0 && moved < 6) { setActive(true); o.tap(tapTarget); }
+    };
+    svg.addEventListener("pointerup", up);
+    svg.addEventListener("pointercancel", up);
+    wrap.addEventListener("wheel", e => {
+      if (!V.active) { flash(o.wheelHint); return; }
+      e.preventDefault();
+      const p = rel(e);
+      V.zoomAt(p[0], p[1], Math.exp(-e.deltaY * (e.deltaMode ? 0.05 : 0.0015)));
+    }, {passive: false});
+    document.addEventListener("pointerdown", e => { if (!wrap.contains(e.target)) { setActive(false); o.outside && o.outside(); } });
+    V.zoomBy = f => { V.zoomAt(V.W / 2, V.H / 2, f); };
+    return V;
+  }
+  function placeTip(wrap, tip, html, sx, sy) {
+    if (html !== null) tip.innerHTML = html;
+    tip.hidden = false;
+    const W = wrap.clientWidth, H = wrap.clientHeight, w = tip.offsetWidth, h = tip.offsetHeight;
+    let x = sx + 18, y = sy - h / 2;
+    if (x + w > W - 8) x = sx - 18 - w;
+    if (x < 8) { x = Math.max(8, Math.min(W - w - 8, sx - w / 2)); y = sy + 20; if (y + h > H - 8) y = sy - 20 - h; }
+    y = Math.max(8, Math.min(H - h - 8, y));
+    tip.style.left = `${x}px`; tip.style.top = `${y}px`;
+  }
+
+  /* World map: Natural Earth I projection, the same one used to draw the country outlines */
+  (function () {
+    const wrap = $("mapWrap"), svg = $("mapSvg"), tip = $("mapTip");
+    const proj = (lon, lat) => {
+      const l = lon * Math.PI / 180, p = lat * Math.PI / 180, p2 = p * p, p4 = p2 * p2;
+      const x = l * (0.8707 - 0.131979 * p2 + p4 * (-0.013791 + p4 * (0.003971 * p2 - 0.001529 * p4)));
+      const y = p * (1.007226 + p2 * (0.015085 + p4 * (-0.044475 + 0.028874 * p2 - 0.005916 * p4)));
+      return [500 + x * 180, 250 - y * 180];
+    };
+    const land = $("mapLand");
+    const cname = cc => { const t = land.querySelector(`path[data-cc="${cc}"] title`); return t ? t.textContent : ""; };
+    land.querySelectorAll("path").forEach(p => { if (countries.has(p.dataset.cc)) p.classList.add("partner"); });
+    const home = {home: true, ...HOME, xy: proj(HOME.lon, HOME.lat)};
+    const pins = [home, ...PARTNERS.filter(p => !p.atHome && typeof p.lat === "number").map(p => ({...p, xy: proj(p.lon, p.lat)}))];
+    const atHome = PARTNERS.filter(p => p.atHome);
+    const over = $("mapOver");
+    over.innerHTML = '<g id="mapArcs"></g><g id="mapLeads"></g><g id="mapMarks"></g>';
+    const arcs = $("mapArcs"), leads = $("mapLeads"), marks = $("mapMarks");
+    pins.forEach((m, i) => {
+      if (!m.home) {
+        const a = home.xy, b = m.xy, dx = b[0] - a[0], dy = b[1] - a[1];
+        m.arc = document.createElementNS(NS, "path");
+        m.arc.setAttribute("class", "arc");
+        m.arc.setAttribute("d", `M${a[0]} ${a[1]}Q${(a[0] + b[0]) / 2 - dy * .22} ${(a[1] + b[1]) / 2 + dx * .22} ${b[0]} ${b[1]}`);
+        m.arc.setAttribute("stroke", topicOf(m.topics[0]).color);
+        m.arc.setAttribute("vector-effect", "non-scaling-stroke");
+        arcs.appendChild(m.arc);
+        m.lead = document.createElementNS(NS, "g");
+        m.lead.innerHTML = '<line class="lead"></line><circle class="lead-dot"></circle>';
+        leads.appendChild(m.lead);
+      }
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "mk"); g.setAttribute("tabindex", "0"); g.setAttribute("role", "button");
+      g.setAttribute("aria-label", m.home ? `${HOME.name}, home institution` : m.name);
+      g.dataset.i = i;
+      const t = m.home ? null : topicOf(m.topics[0]);
+      const shape = m.home ? '<circle class="shape" r="11.5" fill="#2a2140"></circle>'
+        : m.type === "academic" ? `<circle class="shape" r="9.5" fill="${t.color}"></circle>`
+        : `<rect class="shape" x="-8.6" y="-8.6" width="17.2" height="17.2" rx="4" fill="${t.color}"></rect>`;
+      g.innerHTML = `${shape}<g transform="scale(${m.home ? 1.1 : .95})">${GLYPH[m.home ? "home" : m.topics[0]] || GLYPH.misc}</g>`;
+      marks.appendChild(g);
+      m.g = g;
+    });
+    const tipHTML = m => {
+      if (m.home) return `<strong>${esc(HOME.name)}</strong><span class="muted">${esc(HOME.city)}, ${esc(cname(HOME.country))} · home institution</span><ul>${atHome.map(p => `<li>${p.url ? ext(p.url, p.name) : esc(p.name)}${p.when ? ` <span class="muted">· ${esc(p.when)}</span>` : ""}${topicChips(p.topics, p.type !== "academic")}</li>`).join("")}</ul>`;
+      const place = [m.city, cname(m.country)].filter(Boolean).join(", ");
+      return `<strong>${m.url ? ext(m.url, m.name) : esc(m.name)}</strong><span class="muted">${esc(place)} · ${m.type === "academic" ? "academic partner" : "non-academic partner"}${m.when ? ` · ${esc(m.when)}` : ""}</span>${m.where ? `<span>${esc(m.where)}</span>` : ""}${topicChips(m.topics, m.type !== "academic")}`;
+    };
+    let open = null, pinned = false, hideT;
+    const show = (m, pin) => {
+      clearTimeout(hideT);
+      if (open && open !== m) open.g.classList.remove("on");
+      open = m; pinned = pin || (pinned && open === m);
+      m.g.classList.add("on");
+      placeTip(wrap, tip, tipHTML(m), ...m.scr);
+    };
+    const hide = () => { if (open) open.g.classList.remove("on"); open = null; pinned = false; tip.hidden = true; };
+    function layout(k) {
+      const scr = pins.map(m => V.toScreen(...m.xy));
+      const clusters = [];
+      pins.forEach((m, i) => {
+        const s = scr[i];
+        const c = clusters.find(c => Math.hypot(c.x - s[0], c.y - s[1]) < 24);
+        if (!c) { clusters.push({x: s[0], y: s[1], m: [i], home: !!m.home}); return; }
+        c.m.push(i);
+        if (!c.home) { c.x = c.m.reduce((a, j) => a + scr[j][0], 0) / c.m.length; c.y = c.m.reduce((a, j) => a + scr[j][1], 0) / c.m.length; }
+      });
+      const radius = c => { const n = c.m.length - (c.home ? 1 : 0); return n === 1 && !c.home ? 10 : Math.max(c.home ? 27 : 17, n * 4.2) + 10; };
+      for (let merged = true; merged;) {
+        merged = false;
+        for (let a = 0; a < clusters.length && !merged; a++) for (let b = a + 1; b < clusters.length && !merged; b++) {
+          const A = clusters[a], B = clusters[b];
+          if (Math.hypot(A.x - B.x, A.y - B.y) < radius(A) + radius(B) + 4) {
+            A.m.push(...B.m); A.home = A.home || B.home; clusters.splice(b, 1); merged = true;
+            if (A.home) { A.m.sort((i, j) => (pins[j].home ? 1 : 0) - (pins[i].home ? 1 : 0)); A.x = scr[A.m[0]][0]; A.y = scr[A.m[0]][1]; }
+            else { A.x = A.m.reduce((t, j) => t + scr[j][0], 0) / A.m.length; A.y = A.m.reduce((t, j) => t + scr[j][1], 0) / A.m.length; }
+          }
+        }
+      }
+      clusters.forEach(c => {
+        const ring = c.home ? c.m.slice(1) : c.m.slice();
+        pins[c.m[0]].scr = [c.x, c.y];
+        if (!c.home && ring.length === 1) { pins[ring[0]].scr = scr[ring[0]]; return; }
+        if (!ring.length) return;
+        const n = ring.length, step = 2 * Math.PI / n, R = Math.max(c.home ? 27 : 17, n * 4.2);
+        const ang = i => Math.atan2(scr[i][1] - c.y, scr[i][0] - c.x);
+        ring.sort((a, b) => ang(a) - ang(b));
+        let sx = 0, sy = 0;
+        ring.forEach((i, j) => { sx += Math.cos(ang(i) - j * step); sy += Math.sin(ang(i) - j * step); });
+        const a0 = n > 1 ? Math.atan2(sy, sx) : ang(ring[0]);
+        ring.forEach((i, j) => { pins[i].scr = [c.x + R * Math.cos(a0 + j * step), c.y + R * Math.sin(a0 + j * step)]; });
+      });
+      const inHome = new Set(clusters.find(c => c.home).m);
+      pins.forEach((m, i) => {
+        const [x, y] = V.toData(...m.scr);
+        m.g.setAttribute("transform", `translate(${x} ${y}) scale(${1 / k})`);
+        if (m.home) return;
+        m.arc.style.display = inHome.has(i) ? "none" : "";
+        const off = Math.hypot(m.scr[0] - scr[i][0], m.scr[1] - scr[i][1]) > 1;
+        m.lead.style.display = off ? "" : "none";
+        if (off) {
+          const [ln, dot] = m.lead.children;
+          ln.setAttribute("x1", m.xy[0]); ln.setAttribute("y1", m.xy[1]); ln.setAttribute("x2", x); ln.setAttribute("y2", y);
+          dot.setAttribute("cx", m.xy[0]); dot.setAttribute("cy", m.xy[1]); dot.setAttribute("r", 2.2 / k);
+        }
+      });
+      if (open) placeTip(wrap, tip, null, ...open.scr);
+    }
+    const world = (() => { const a = proj(-180, 84), b = proj(180, -57); return [a[0], a[1], b[0], b[1]]; })();
+    const partnersBox = () => {
+      const xs = pins.map(m => m.xy[0]), ys = pins.map(m => m.xy[1]);
+      return [Math.min(...xs) - 6, Math.min(...ys) - 4, Math.max(...xs) + 6, Math.max(...ys) + 4];
+    };
+    const V = makeView(wrap, svg, $("mapHint"), {
+      onView: layout,
+      reset: () => { V.fit(partnersBox(), 30); V.moved = false; },
+      limits: fitK => [fitK(world, 10) * .9, fitK(partnersBox(), 30) * 14],
+      tap: t => { const g = t && t.closest && t.closest(".mk"); if (g) show(pins[g.dataset.i], true); else hide(); },
+      outside: () => { if (pinned) hide(); },
+      wheelHint: "Click the map first, then zoom with the mouse wheel",
+      touchHint: "Tap the map first, then drag or pinch to move it"
+    });
+    marks.addEventListener("pointerover", e => { if (e.pointerType !== "mouse" || pinned) return; const g = e.target.closest(".mk"); if (g) show(pins[g.dataset.i], false); });
+    marks.addEventListener("pointerout", e => { if (e.pointerType !== "mouse" || pinned) return; const g = e.target.closest(".mk"); if (g && !g.contains(e.relatedTarget)) hideT = setTimeout(hide, 350); });
+    tip.addEventListener("pointerenter", () => clearTimeout(hideT));
+    tip.addEventListener("pointerleave", e => { if (!pinned && e.pointerType === "mouse") hideT = setTimeout(hide, 350); });
+    marks.addEventListener("focusin", e => { const g = e.target.closest(".mk"); if (g) show(pins[g.dataset.i], false); });
+    marks.addEventListener("keydown", e => { if (e.key === "Escape") hide(); });
+    $("mapIn").addEventListener("click", () => V.zoomBy(1.6));
+    $("mapOut").addEventListener("click", () => V.zoomBy(1 / 1.6));
+    $("mapFit").addEventListener("click", () => { hide(); V.fit(partnersBox(), 30); V.moved = false; });
+    $("mapWorld").addEventListener("click", () => { hide(); V.fit(world, 10); V.moved = true; });
+    const used = [...new Set(PARTNERS.flatMap(p => p.topics))].sort((a, b) => Object.keys(TOPICS).indexOf(a) - Object.keys(TOPICS).indexOf(b));
+    $("mapLegend").innerHTML = used.map(k => `<span>${badge(k)}${esc(topicOf(k).label)}</span>`).join("")
+      + '<span class="sep"></span><span><span class="badge plain"></span>Academic partner</span><span><span class="badge plain sq"></span>Non-academic partner</span>'
+      + `<span><span class="badge" style="background:#2a2140"><svg viewBox="-6.5 -6.5 13 13" aria-hidden="true">${GLYPH.home}</svg></span>${esc(HOME.name)}</span>`;
+  })();
+
+  /* Co-author network: a small force layout, no external libraries */
+  (function () {
+    const wrap = $("netWrap"), svg = $("netSvg"), G = $("netG"), tip = $("netTip");
+    const disp = a => { const i = a.lastIndexOf(" "); return i > 0 ? `${a.slice(i + 1)} ${a.slice(0, i)}` : a; };
+    const color = k => topicOf(k).color;
+    const LEVELS = [[1, "All co-authors"], [2, "2+ joint papers"], [3, "3+ joint papers"], [5, "5+ joint papers"]];
+    let level = 1, N = [], L = [], byId = new Map(), alpha = 0, raf = 0, focus = null, pinned = false, hideT;
+    const rand = (s => () => { s = (s * 16807) % 2147483647; return s / 2147483647; })(7);
+    const meNode = {id: ME, me: true, x: 0, y: 0, vx: 0, vy: 0, r: 17, fixed: true};
+    function build() {
+      const keep = [...AUTH.values()].filter(r => r.n >= level).sort((a, b) => b.n - a.n);
+      const keepSet = new Set(keep.map(r => r.id));
+      N = [meNode]; byId = new Map([[ME, meNode]]); L = [];
+      const th = THEME_KEYS.length;
+      keep.forEach((r, i) => {
+        const a = (THEME_KEYS.indexOf(r.theme) + rand() * .8) / th * 2 * Math.PI, d = 60 + 230 / Math.sqrt(r.n);
+        const n = {id: r.id, r: 3.6 + 1.55 * Math.sqrt(r.n), rec: r, x: d * Math.cos(a), y: d * Math.sin(a), vx: 0, vy: 0, major: i < 12};
+        N.push(n); byId.set(r.id, n);
+        L.push({s: meNode, t: n, d: 46 + 210 / Math.sqrt(r.n), k: .07, b: 1, spoke: true});
+      });
+      keep.forEach(r => r.nb.forEach((w, b) => { if (keepSet.has(b)) L.push({s: byId.get(r.id), t: byId.get(b), w, d: 46, k: 0}); }));
+      const deg = new Map();
+      L.forEach(l => { if (!l.spoke) { deg.set(l.s, (deg.get(l.s) || 0) + 1); deg.set(l.t, (deg.get(l.t) || 0) + 1); } });
+      L.forEach(l => { if (!l.spoke) { const ds = deg.get(l.s), dt = deg.get(l.t); l.k = Math.min(1, .6 * Math.sqrt(l.w) / Math.min(ds, dt)); l.b = ds / (ds + dt); } });
+      G.innerHTML = "";
+      const gl = document.createElementNS(NS, "g"), gn = document.createElementNS(NS, "g");
+      G.append(gl, gn);
+      L.forEach(l => {
+        l.el = document.createElementNS(NS, "line");
+        l.el.setAttribute("class", l.spoke ? "spoke" : "ln");
+        if (!l.spoke) { l.el.setAttribute("stroke-width", Math.min(3.2, .7 + .55 * Math.log2(l.w + 1)).toFixed(2)); l.el.style.strokeOpacity = Math.min(.6, .13 + .07 * l.w).toFixed(2); }
+        gl.appendChild(l.el);
+      });
+      N.forEach(n => {
+        n.g = document.createElementNS(NS, "g");
+        n.g.setAttribute("class", `nd${n.me ? " me" : ""}`);
+        n.g.innerHTML = `<circle r="${n.r.toFixed(1)}"${n.me ? "" : ` fill="${color(n.rec.theme)}"`}></circle><text dy=".35em">${esc(n.me ? CV.name : disp(n.id))}</text>`;
+        n.g.dataset.id = n.id;
+        gn.appendChild(n.g);
+      });
+      alpha = 1;
+      for (let i = 0; i < 320; i++) tick();
+      alpha = 0;
+      draw();
+    }
+    function tick() {
+      alpha += (0 - alpha) * .0228;
+      for (const l of L) {
+        const s = l.s, t = l.t;
+        let dx = t.x + t.vx - s.x - s.vx, dy = t.y + t.vy - s.y - s.vy;
+        const d = Math.hypot(dx, dy) || 1e-6, f = (d - l.d) / d * alpha * l.k;
+        dx *= f; dy *= f;
+        t.vx -= dx * l.b; t.vy -= dy * l.b; s.vx += dx * (1 - l.b); s.vy += dy * (1 - l.b);
+      }
+      for (let i = 0; i < N.length; i++) {
+        const p = N[i];
+        for (let j = i + 1; j < N.length; j++) {
+          const q = N[j];
+          let dx = q.x - p.x, dy = q.y - p.y, d2 = dx * dx + dy * dy;
+          if (d2 < 1e-6) { dx = (i - j) * .01; dy = .01; d2 = dx * dx + dy * dy; }
+          if (d2 < 250000) { const f = -95 * alpha / d2; p.vx += dx * f; p.vy += dy * f; q.vx -= dx * f; q.vy -= dy * f; }
+          const rr = p.r + q.r + 5;
+          if (d2 < rr * rr) { const d = Math.sqrt(d2), m = (rr - d) / d * .35; p.vx -= dx * m; p.vy -= dy * m; q.vx += dx * m; q.vy += dy * m; }
+        }
+        p.vx -= p.x * .012 * alpha; p.vy -= p.y * .012 * alpha;
+      }
+      for (const n of N) {
+        if (n.fixed) { n.vx = n.vy = 0; if (n.me) { n.x = 0; n.y = 0; } else { n.x = n.fx; n.y = n.fy; } continue; }
+        n.vx *= .6; n.vy *= .6; n.x += n.vx; n.y += n.vy;
+      }
+    }
+    let k = 1;
+    function draw() {
+      for (const l of L) { l.el.setAttribute("x1", l.s.x.toFixed(1)); l.el.setAttribute("y1", l.s.y.toFixed(1)); l.el.setAttribute("x2", l.t.x.toFixed(1)); l.el.setAttribute("y2", l.t.y.toFixed(1)); }
+      for (const n of N) {
+        n.g.setAttribute("transform", `translate(${n.x.toFixed(1)} ${n.y.toFixed(1)})`);
+        const t = n.g.lastChild, left = !n.me && n.x < -1;
+        t.setAttribute("x", ((left ? -1 : 1) * (n.r + 4 / k)).toFixed(2));
+        t.setAttribute("text-anchor", left ? "end" : "start");
+      }
+      const fs = 11 / k, boxes = [];
+      const cand = N.filter(n => focus && !focus.me ? n.g.classList.contains("lit") : n.me || n.major);
+      const rank = n => n === focus ? 1e9 : n.me ? 1e8 : n.rec.n;
+      cand.sort((a, b) => rank(b) - rank(a));
+      N.forEach(n => n.g.lastChild.classList.remove("show"));
+      const dots = N.filter(n => n.r > 7 && (!focus || focus.me || n.g.classList.contains("lit"))).map(n => [n.x - n.r * .6, n.y - n.r * .6, n.x + n.r * .6, n.y + n.r * .6, n]);
+      cand.forEach(n => {
+        const w = (n.me ? CV.name : disp(n.id)).length * fs * (n.me ? .62 : .56), h = fs * 1.2, gap = n.r + 4 / k, y0 = n.y - h / 2;
+        const sides = n.me || n.x >= -1 ? [1, -1] : [-1, 1];
+        const must = n.me || n === focus || (!focus && n.rec.n >= 25);
+        for (const side of sides) {
+          const x0 = side > 0 ? n.x + gap : n.x - gap - w;
+          const hit = b => b[4] !== n && x0 < b[2] && x0 + w > b[0] && y0 < b[3] && y0 + h > b[1];
+          if (!must && (boxes.some(hit) || dots.some(hit))) continue;
+          boxes.push([x0, y0, x0 + w, y0 + h]);
+          const t = n.g.lastChild;
+          t.classList.add("show");
+          t.setAttribute("x", (side * gap).toFixed(2));
+          t.setAttribute("text-anchor", side > 0 ? "start" : "end");
+          break;
+        }
+      });
+      if (focus) placeTip(wrap, tip, null, ...V.toScreen(focus.x, focus.y));
+    }
+    function animate() {
+      cancelAnimationFrame(raf);
+      const loop = () => { tick(); draw(); if (alpha > .004) raf = requestAnimationFrame(loop); };
+      raf = requestAnimationFrame(loop);
+    }
+    const box = () => {
+      const pad = 70;
+      return [Math.min(...N.map(n => n.x - n.r)) - pad * .5, Math.min(...N.map(n => n.y - n.r)) - 12, Math.max(...N.map(n => n.x + n.r)) + pad * .5, Math.max(...N.map(n => n.y + n.r)) + 12];
+    };
+    const tipHTML = n => {
+      if (n.me) return `<strong>${esc(CV.name)}</strong><span class="muted">${PUBS.length} publications with ${AUTH.size} co-authors</span>`;
+      const r = n.rec, links = [...byId.values()].filter(m => !m.me && m !== n && (r.nb.get(m.id) || (m.rec.nb.get(r.id)))).length;
+      return `<strong>${esc(disp(r.id))}</strong><span class="muted">${r.n} joint ${r.n === 1 ? "paper" : "papers"} · ${r.y0 === r.y1 ? r.y0 : `${r.y0} – ${r.y1}`}</span><span class="tchips"><span><i class="dot" style="background:${color(r.theme)}"></i>${esc(THEMES[r.theme])}</span></span>${links ? `<span class="muted">Also co-authored with ${links} ${links === 1 ? "person" : "people"} shown here</span>` : ""}`;
+    };
+    const setFocus = (n, pin) => {
+      clearTimeout(hideT);
+      focus = n; pinned = pin;
+      G.classList.toggle("focus", !n.me);
+      const nb = new Set([n, meNode]);
+      L.forEach(l => { const on = l.s === n || l.t === n; l.el.classList.toggle("lit", on); if (on) { nb.add(l.s); nb.add(l.t); } });
+      N.forEach(m => m.g.classList.toggle("lit", nb.has(m)));
+      draw();
+      placeTip(wrap, tip, tipHTML(n), ...V.toScreen(n.x, n.y));
+    };
+    const clearFocus = () => { focus = null; pinned = false; G.classList.remove("focus"); tip.hidden = true; if (N.length) draw(); };
+    const nodeOf = t => { const g = t && t.closest && t.closest(".nd"); return g ? byId.get(g.dataset.id) : null; };
+    const fitNet = () => { V.fit(box(), 16); if (V.k > 1.4) { V.k = 1.4; V.apply(); } V.moved = false; };
+    const V = makeView(wrap, svg, $("netHint"), {
+      onView: kk => { k = kk; G.style.setProperty("--fs", `${11 / kk}px`); G.style.setProperty("--fs-me", `${12.5 / kk}px`); draw(); },
+      reset: fitNet,
+      limits: fitK => [fitK(box(), 16) * .5, fitK(box(), 16) * 6],
+      grab: t => { const n = nodeOf(t); if (!n || n.me) return null; n.fixed = true; n.fx = n.x; n.fy = n.y; return n; },
+      drag: (n, [x, y]) => { n.fx = x; n.fy = y; alpha = Math.max(alpha, .25); animate(); },
+      release: n => { n.fixed = false; },
+      tap: t => { const n = nodeOf(t); if (n) setFocus(n, true); else clearFocus(); },
+      outside: () => { if (pinned) clearFocus(); },
+      wheelHint: "Click the network first, then zoom with the mouse wheel",
+      touchHint: "Tap the network first, then drag or pinch to move it"
+    });
+    G.addEventListener("pointerover", e => { if (e.pointerType !== "mouse" || pinned || e.buttons) return; const n = nodeOf(e.target); if (n) setFocus(n, false); });
+    G.addEventListener("pointerout", e => { if (e.pointerType !== "mouse" || pinned) return; const n = nodeOf(e.target); if (n && !n.g.contains(e.relatedTarget)) hideT = setTimeout(clearFocus, 200); });
+    $("netIn").addEventListener("click", () => V.zoomBy(1.6));
+    $("netOut").addEventListener("click", () => V.zoomBy(1 / 1.6));
+    $("netFit").addEventListener("click", () => { clearFocus(); fitNet(); });
+    const renderFilters = () => {
+      $("netFilters").innerHTML = LEVELS.map(([lv, t]) => `<button class="pill" type="button" data-lv="${lv}" aria-pressed="${lv === level}">${t}<small>${[...AUTH.values()].filter(r => r.n >= lv).length}</small></button>`).join("");
+    };
+    $("netFilters").addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      level = +b.dataset.lv; renderFilters(); clearFocus(); build();
+      if (V.W) fitNet();
+    });
+    renderFilters(); build();
+    const usedThemes = THEME_KEYS.filter(t => [...AUTH.values()].some(r => r.theme === t));
+    $("netLegend").innerHTML = usedThemes.map(t => `<span><i class="dot" style="background:${color(t)}"></i>${esc(THEMES[t])}</span>`).join("")
+      + `<span class="sep"></span><span><i class="dot" style="background:#2a2140"></i>${esc(CV.name)}</span><span>Larger dot: more joint papers</span>`;
+  })();
 
   /* Publications */
   const F = {theme: "all", type: "all", year: null, q: ""};
