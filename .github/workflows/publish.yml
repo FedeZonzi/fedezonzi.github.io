@@ -23,7 +23,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0    # full history, to read the date of the last change to the page
 
@@ -52,12 +52,12 @@ jobs:
           printf 'User-agent: *\nAllow: /\nSitemap: https://fedezonzi.github.io/sitemap.xml\n' > _site/robots.txt
           printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://fedezonzi.github.io/</loc><lastmod>%s</lastmod></url>\n  <url><loc>https://fedezonzi.github.io/Federica_Zonzini_CV.pdf</loc><lastmod>%s</lastmod></url>\n</urlset>\n' "$(git log -1 --format=%cs -- index.html)" "$(git log -1 --format=%cs -- '*.pdf')" > _site/sitemap.xml
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       - name: Check links
         id: links
