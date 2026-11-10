@@ -41,6 +41,8 @@ def check(url):
         except urllib.error.HTTPError as e:
             if doi and 300 <= e.code < 400:
                 return url, "ok", f"DOI registered ({e.code})"
+            if 300 <= e.code < 400:   # endless redirects: the site wants cookies or a login
+                return url, "blocked", f"the site needs a browser to open ({e.code})"
             if e.code in (404, 410):
                 if method == "HEAD":
                     last = str(e.code); continue
