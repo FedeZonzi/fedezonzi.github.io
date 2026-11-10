@@ -2,10 +2,10 @@ name: Publish site
 
 on:
   push:
-    branches: [main]
+    branches: [main]        # publishes every time you change a file
   schedule:
-    - cron: "17 6 3 * *"
-  workflow_dispatch:
+    - cron: "17 6 3 * *"    # on the 3rd of every month at 06:17 UTC: updates citations and checks links
+  workflow_dispatch:        # adds a "Run workflow" button in the Actions tab
 
 permissions:
   contents: write
@@ -24,13 +24,15 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # full history, to read the date of the last change to the page
 
       - name: Update citations from Google Scholar
         id: citations
         if: github.event_name != 'push'
         continue-on-error: true
         env:
-          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}   # optional
         run: python3 update_citations.py
 
       - name: Save the new figures
@@ -44,7 +46,11 @@ jobs:
       - name: Prepare the site
         run: |
           mkdir _site
-          cp index.html stats.json *.pdf _site/
+          cp stats.json *.pdf *.png _site/
+          UPDATED=$(git log -1 --format=%cd --date=format:'%-d %B %Y' -- index.html)
+          sed "s/lastUpdated: \"\"/lastUpdated: \"$UPDATED\"/" index.html > _site/index.html
+          printf 'User-agent: *\nAllow: /\nSitemap: https://fedezonzi.github.io/sitemap.xml\n' > _site/robots.txt
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://fedezonzi.github.io/</loc><lastmod>%s</lastmod></url>\n  <url><loc>https://fedezonzi.github.io/Federica_Zonzini_CV.pdf</loc><lastmod>%s</lastmod></url>\n</urlset>\n' "$(git log -1 --format=%cs -- index.html)" "$(git log -1 --format=%cs -- '*.pdf')" > _site/sitemap.xml
 
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -53,8 +59,15 @@ jobs:
       - id: deploy
         uses: actions/deploy-pages@v4
 
-      - name: Report a failed citation update
-        if: steps.citations.outcome == 'failure'
+      - name: Check links
+        id: links
+        if: github.event_name != 'push'
+        continue-on-error: true
+        run: python3 check_links.py
+
+      - name: Report problems
+        if: steps.citations.outcome == 'failure' || steps.links.outcome == 'failure'
         run: |
-          echo "The site was published with the previous citation figures."
+          if [ "${{ steps.citations.outcome }}" = "failure" ]; then echo "Citations were not updated: the site shows the previous figures."; fi
+          if [ "${{ steps.links.outcome }}" = "failure" ]; then echo "Some links are broken: open the 'Check links' step or the run summary for the list."; fi
           exit 1
