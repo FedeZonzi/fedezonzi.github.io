@@ -452,6 +452,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .timeline li.extra { display: grid !important; }
   .older { display: block !important; }
 }
+/* Theses */
+#theses:not(.open) li.extra { display: none; }
+#thesisMore { margin-top: 14px; }
+.thesis-sum { max-width: 70ch; margin-bottom: 6px; }
+#theses .what a { color: var(--fg); text-decoration: none; }
+#theses .what a:hover { color: var(--accent); text-decoration: underline; }
+.trole { color: var(--muted); }
+.trole.sup { color: var(--accent); font-weight: 500; }
+@media print { #theses li.extra { display: grid !important; } .trole.sup { color: inherit; } }
 </style>
 </head>
 <body>
@@ -645,6 +654,80 @@ const CV = {
     {name: "Giacomo Donati", cycle: "XXXIX", role: "Co-supervisor", title: "Development of Edge AI Solutions for Continuous and Real-Time Structural Health Monitoring", end: "03/2027"},
     {name: "Stefano Taccetti", cycle: "XXXIX", role: "Co-supervisor", title: "Development of Innovative Tools for the Identification and Characterization of Acoustic Emissions", end: "03/2027"},
     {name: "Mohammed Abdullah Siddiqui", cycle: "XXXVIII", role: "Co-supervisor", title: "Exploiting AR Models and Influence Lines for Vibration-Based SHM of Bridges", end: "03/2026", done: true}
+  ],
+  thesesSource: "https://amslaurea.unibo.it/view/relatore/Zonzini=3AFederica=3A=3A/",
+  thesesYearsOpen: 2,        // years of theses shown before "Show earlier theses"
+  /* Master's and bachelor's theses, newest first. Source: AMS Tesi di Laurea (amslaurea.unibo.it).
+     role: "Supervisor" (relatrice) or "Co-supervisor" (correlatrice) · ams: the number at the end of the thesis page address */
+  theses: [
+    {y: 2026, month: "October", name: "Riccardo Gattoni", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 40020,
+     title: "Compressed Sensing e Super-Risoluzione per l'Imaging Strutturale basato su Onde Guidate"},
+    {y: 2026, month: "July", name: "Yuri D'Intino", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 39503,
+     title: "Deep Learning e Metodi di Explainable AI per l'Anomaly Detection Industriale Basata su Segnali Acustici"},
+    {y: 2026, month: "July", name: "Andrea Castronovo", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 39491,
+     title: "Progettazione di un sistema di autoricarica e docking per droni da inserire in PoC per il monitoraggio indoor industriale"},
+    {y: 2026, month: "March", name: "Salvatore Vangone", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 38538,
+     title: "Progettazione e integrazione di firmware di bordo per la gestione di una piattaforma nanosatellitare CubeSat"},
+    {y: 2026, month: "March", name: "Lorenzo Carbone", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 38522,
+     title: "Progetto e Prototipazione di un Sensore Magnetico Triassiale basato su Doppia Tecnologia Fluxgate e Search Coil Spazializzabile"},
+    {y: 2026, month: "February", name: "Fabiana Barone Raimondo", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 37844,
+     title: "FFT per Analog In-Memory Computing: dal mapping all’ottimizzazione per dispositivi a cambiamento di fase"},
+    {y: 2025, month: "December", name: "Youness Laaraji", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 37265,
+     title: "Studio e realizzazione di un sistema di attuazione e acquisizione per difetti di distacco in strutture multistrato"},
+    {y: 2025, month: "December", name: "Stefano Maggioreni", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 37255,
+     title: "Analisi preliminare della prossima generazione di Battery Management Systems per il monitoraggio dei pacchi batterie per vetture elettriche"},
+    {y: 2025, month: "December", name: "Ivano Barrasso", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 37267,
+     title: "Sviluppo e progettazione di una piattaforma eterogenea a microcontrollore per il monitoraggio strutturale"},
+    {y: 2025, month: "December", name: "Elisabetta Cammarata", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 37261,
+     title: "Analisi sperimentale di segnali biomedici nel contesto di dispositivi wearable per l'healthcare: dall'acquisizione all'elaborazione"},
+    {y: 2025, month: "October", name: "Miriam Ridolfo", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 36257,
+     title: "Studio e progettazione di un pre-amplificatore a basso rumore per trasduttori direzionali"},
+    {y: 2025, month: "October", name: "Lorena Rizzo", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 36256,
+     title: "Spiking Neural Networks per il monitoraggio strutturale basato su emissioni acustiche"},
+    {y: 2025, month: "October", name: "Andrea Manfroni", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 36282,
+     title: "Studio e sviluppo di un dispositivo per la generazione e il rilevamento di micro cortocircuiti in celle Li-ion: verso BMS di nuova generazione"},
+    {y: 2025, month: "July", name: "Reza Sadri", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 35660,
+     title: "Integrating SHAP analysis in deep learning models for structural health monitoring"},
+    {y: 2025, month: "March", name: "Riccardo Artioli", degree: "M.Sc.", course: "Mechanical Engineering", role: "Co-supervisor", ams: 34990,
+     title: "Impact localization and enhanced fracture toughness for CFRP laminate by piezoelectric nanofibers interleaving"},
+    {y: 2025, month: "February", name: "Roberta Di Palma", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 34294,
+     title: "Studio e prototipazione di un nodo sensore per la stima dell'evapotraspirazione in agricoltura di precisione"},
+    {y: 2024, month: "July", name: "Giacomo Petta", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 32485,
+     title: "Artificial Intelligence based vehicle fault analysis"},
+    {y: 2024, month: "March", name: "Marco Pirazzi", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 31683,
+     title: "Study and realization of an energy-autonomous WSN for acceleration monitoring based on nano-drones"},
+    {y: 2024, month: "March", name: "Daniele Martinelli", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 31281,
+     title: "Compressed sensing con memorie a cambiamento di fase per monitoraggio di vibrazioni strutturali"},
+    {y: 2024, month: "March", name: "Andi Gashi", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 31331,
+     title: "Smart monitoring system for automatic tensioning device through object detection neural network"},
+    {y: 2023, month: "December", name: "Roberto Celli", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 30352,
+     title: "Realizzazione di uno auscultimetro elettronico – dal dispositivo all’elaborazione dati"},
+    {y: 2023, month: "October", name: "Linda Morosato", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 29794,
+     title: "Stime di spostamenti a partire da segnali accelerometrici per applicazioni edge in ambito ferroviario"},
+    {y: 2023, month: "October", name: "Chenguang Li", degree: "M.Sc.", course: "Electronic Engineering", role: "Supervisor", ams: 29671,
+     title: "Deployment of Tiny Machine Learning models on a low-end computing platform for vibration-based diagnostics"},
+    {y: 2023, month: "March", name: "Benedetta Baldini", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 28502,
+     title: "Spiking Neural Networks per il monitoraggio strutturale basato su vibrazioni"},
+    {y: 2022, month: "December", name: "Giacomo Donati", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 27450,
+     title: "Implementazione di algoritmi Tiny Machine Learning per il monitoraggio strutturale basato su emissioni acustiche"},
+    {y: 2021, month: "December", name: "Tanush Dhamija", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 24620,
+     title: "Deep Learning Architectures for time of arrival detection in Acoustic Emissions Monitoring"},
+    {y: 2021, month: "December", name: "Muhammad Kashif", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 24773,
+     title: "Analysis and Evaluation of Tiny Machine Learning applications"},
+    {y: 2021, month: "March", name: "Filippo Graziani", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 22625,
+     title: "Modulazioni \"Time-reversal\" con codifiche a bassa profondità per comunicazioni ultrasoniche"},
+    {y: 2021, month: "March", name: "Chinmay Wadekar", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 22678,
+     title: "A Tiny Machine Learning implementation with low-power devices in Structural Health Monitoring Applications"},
+    {y: 2021, month: "March", name: "Andrea Fato", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 22435,
+     title: "Modulazione “Spread Spectrum” per comunicazioni ad ultrasuoni"},
+    {y: 2020, month: "October", name: "Francesca Romano", degree: "M.Sc.", course: "Electronic Engineering", role: "Co-supervisor", ams: 21624,
+     title: "Tecniche avanzate di campionamento e classificazione di segnali vibrazionali per la valutazione dell’integrità strutturale"},
+    {y: 2020, month: "July", name: "Giacomo Pazzaglini", degree: "B.Sc.", course: "Electronic Engineering for Energy and Information, Cesena", role: "Co-supervisor", ams: 21020,
+     title: "Analisi di protocolli di comunicazione wireless per comunicazioni con onde guidate"},
+    {y: 2019, month: "July", name: "Martina Verardi", degree: "B.Sc.", course: "Biomedical Engineering, Cesena", role: "Co-supervisor", ams: 18558,
+     title: "Gestione ad interrupt di una piattaforma inerziale basata su FIFO"},
+    {y: 2019, month: "July", name: "Chiara Testa", degree: "B.Sc.", course: "Biomedical Engineering, Cesena", role: "Co-supervisor", ams: 18592,
+     title: "Analisi dei parametri modali al variare delle condizioni per monitoraggio strutturale"}
   ],
   boards: [
     {when: "10/2026", what: "Sasan Salmani Pour Avval", where: "TU Delft, Aerospace Engineering. Automated Machine Learning Architecture Design for Industries By Green Industrial Neural Architecture Search"},
@@ -1207,7 +1290,7 @@ const PUBS = [
   <div class="page" id="p-teaching" data-page="teaching" hidden>
     <div class="head">
       <h1>Teaching and Supervision</h1>
-      <p class="muted">Courses at the University of Bologna, doctoral candidates in EIT4SEMM and research fellows.</p>
+      <p class="muted">Courses at the University of Bologna, doctoral candidates in EIT4SEMM, master's and bachelor's theses, and research fellows.</p>
     </div>
     <section class="block no-print">
       <div class="note" id="opportunity"></div>
@@ -1223,6 +1306,12 @@ const PUBS = [
     <section class="block">
       <h2 class="block-title">Completed Ph.D. supervision</h2>
       <ul class="plist" id="phdDone"></ul>
+    </section>
+    <section class="block">
+      <h2 class="block-title">Master's and bachelor's theses</h2>
+      <p class="muted thesis-sum" id="thesisSummary"></p>
+      <ul class="plist" id="theses"></ul>
+      <button class="ghost" type="button" id="thesisMore"></button>
     </section>
     <section class="block">
       <h2 class="block-title">Awards to students</h2>
@@ -1906,6 +1995,17 @@ const PUBS = [
   /* Supervision */
   $("opportunity").innerHTML = `<strong>Opportunities for students</strong><span>${esc(CV.opportunity)} <a href="#contact">Contact details</a></span>`;
   $("phdDone").innerHTML = plistItems(CV.phd.filter(s => s.done).map(s => ({when: s.end, what: `${s.name}, ${s.role.toLowerCase()}`, where: `Cycle ${s.cycle}. ${s.title}`})));
+  {
+    const T = CV.theses, last = Math.max(...T.map(t => t.y)), cut = last - CV.thesesYearsOpen + 1;
+    const sup = T.filter(t => t.role === "Supervisor").length;
+    $("thesisSummary").innerHTML = `${T.length} theses since ${Math.min(...T.map(t => t.y))}: ${sup} as supervisor and ${T.length - sup} as co-supervisor. Titles are in the language of the thesis. Full records on ${ext(CV.thesesSource, "AMS Tesi di Laurea")}.`;
+    $("theses").innerHTML = T.map(t => `<li${t.y < cut ? ' class="extra"' : ""}><div class="ph"><span class="what">${ext(`https://amslaurea.unibo.it/id/eprint/${t.ams}/`, t.title)}</span><span class="when mono">${esc(t.month ? `${t.month.slice(0, 3)} ${t.y}` : String(t.y))}</span></div><div class="where">${esc(t.name)} · ${esc(t.degree)} in ${esc(t.course)} · <span class="trole${t.role === "Supervisor" ? " sup" : ""}">${esc(t.role)}</span></div></li>`).join("");
+    const older = T.filter(t => t.y < cut).length, btn = $("thesisMore");
+    const label = () => { const open = $("theses").classList.contains("open"); btn.textContent = open ? "Show fewer theses" : `Show earlier theses, ${cut - 1} – ${Math.min(...T.map(t => t.y))} (${older})`; };
+    btn.hidden = !older;
+    btn.addEventListener("click", () => { $("theses").classList.toggle("open"); label(); });
+    label();
+  }
   $("phd").innerHTML = CV.phd.filter(s => !s.done).map(s => `<tr><td class="nowrap">${esc(s.name)}</td><td class="num">${esc(s.cycle)}</td><td class="nowrap">${esc(s.role)}</td><td>${esc(s.title)}</td><td class="num">${esc(s.end)}</td></tr>`).join("");
   $("studentAwards").innerHTML = plistItems(CV.studentAwards);
   $("boards").innerHTML = rowItems(CV.boards);
